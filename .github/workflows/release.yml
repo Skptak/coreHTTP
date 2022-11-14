@@ -47,7 +47,7 @@ jobs:
           git diff ${{ github.event.inputs.commit_id }} tags/${{ github.event.inputs.version_number }}
       - name: Remove branch
         run: |
-          git push origin --delete ${{ github.event.inputs.version_number }}
+          git push origin --delete heads/${{ github.event.inputs.version_number }}
   create-zip:
     needs: tag-commit
     name: Create ZIP and verify package for release asset.
