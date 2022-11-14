@@ -23,6 +23,8 @@ jobs:
         run: |
           git config --global user.name ${{ github.actor }}
           git config --global user.email ${{ github.actor }}@users.noreply.github.com
+      - name: create a new branch that references commit id
+        run: git checkout -b ${{ github.event.inputs.version_number }} ${{ github.event.inputs.commit_id }}
       - name: Generate SBOM
         uses: FreeRTOS/CI-CD-Github-Actions/sbom-generator@main
         with:
@@ -30,9 +32,9 @@ jobs:
           source_path: ./source
       - name: commit SBOM file
         run: |
-          git add sbom.spdx
-          git commit --amend --no-edit
-          git push --force
+          git add .
+          git commit -m 'Update SBOM'
+          git push -u origin ${{ github.event.inputs.version_number }}
       - name: Tag Commit and Push to remote
         run: |
           git tag ${{ github.event.inputs.version_number }} -a -m "coreHTTP Library ${{ github.event.inputs.version_number }}"
@@ -43,6 +45,9 @@ jobs:
           git remote update
           git checkout tags/${{ github.event.inputs.version_number }}
           git diff ${{ github.event.inputs.commit_id }} tags/${{ github.event.inputs.version_number }}
+      - name: Remove branch
+        run: |
+          git push origin --delete ${{ github.event.inputs.version_number }}
   create-zip:
     needs: tag-commit
     name: Create ZIP and verify package for release asset.
