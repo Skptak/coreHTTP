@@ -20,7 +20,5 @@
     "source/interface",
     "source/dependency/3rdparty/llhttp/include"
   ],
-  "compiler_flags": [
-    "HTTP_DO_NOT_USE_CUSTOM_CONFIG"
-  ]
+  "compiler_flags": ["HTTP_DO_NOT_USE_CUSTOM_CONFIG"]
 }

@@ -1,9 +1,10 @@
-name : "coreHTTP"
+name: "coreHTTP"
 version: "v3.0.0"
-description: "Client implementation of the HTTP/1.1 specification for embedded devices."
+description:
+  "Client implementation of the HTTP/1.1 specification for embedded devices."
 license: "MIT"
 dependencies:
-  - name : "llhttp"
+  - name: "llhttp"
     version: "release/v6.0.5"
     license: "MIT"
     repository:

@@ -1,7 +1,5 @@
-{ "expected-missing-functions":
-  [
-
-  ],
+{
+  "expected-missing-functions": [],
   "proof-name": "HTTPClient_AddRangeHeader",
   "proof-root": "cbmc/proofs"
 }
