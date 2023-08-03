@@ -4,27 +4,28 @@
  *
  * SPDX-License-Identifier: MIT
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <stdbool.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "unity.h"
 
@@ -45,7 +46,8 @@
     "test-header4: test-value1\r\n"            \
     "test-header5: test-value2\r\n"            \
     "\r\n"
-#define HTTP_TEST_REQUEST_HEAD_HEADERS_LENGTH    ( sizeof( HTTP_TEST_REQUEST_HEAD_HEADERS ) - 1U )
+#define HTTP_TEST_REQUEST_HEAD_HEADERS_LENGTH \
+    ( sizeof( HTTP_TEST_REQUEST_HEAD_HEADERS ) - 1U )
 
 /* Template HTTP request for a PUT request. */
 #define HTTP_TEST_REQUEST_PUT_HEADERS         \
@@ -56,11 +58,15 @@
     "test-header4: test-value1\r\n"           \
     "test-header5: test-value2\r\n"           \
     "\r\n"
-#define HTTP_TEST_REQUEST_PUT_HEADERS_LENGTH                    ( sizeof( HTTP_TEST_REQUEST_PUT_HEADERS ) - 1U )
-#define HTTP_TEST_REQUEST_PUT_BODY                              "abcdefghijklmnopqrstuvwxyz"
-#define HTTP_TEST_REQUEST_PUT_BODY_LENGTH                       ( sizeof( HTTP_TEST_REQUEST_PUT_BODY ) - 1U )
-#define HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED           "Content-Length: 26\r\n" HTTP_HEADER_LINE_SEPARATOR
-#define HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED_LENGTH    ( sizeof( HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED ) - 1U )
+#define HTTP_TEST_REQUEST_PUT_HEADERS_LENGTH \
+    ( sizeof( HTTP_TEST_REQUEST_PUT_HEADERS ) - 1U )
+#define HTTP_TEST_REQUEST_PUT_BODY "abcdefghijklmnopqrstuvwxyz"
+#define HTTP_TEST_REQUEST_PUT_BODY_LENGTH \
+    ( sizeof( HTTP_TEST_REQUEST_PUT_BODY ) - 1U )
+#define HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED \
+    "Content-Length: 26\r\n" HTTP_HEADER_LINE_SEPARATOR
+#define HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED_LENGTH \
+    ( sizeof( HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED ) - 1U )
 
 /* Template HTTP request for a GET request. */
 #define HTTP_TEST_REQUEST_GET_HEADERS         \
@@ -71,27 +77,29 @@
     "test-header4: test-value1\r\n"           \
     "test-header5: test-value2\r\n"           \
     "\r\n"
-#define HTTP_TEST_REQUEST_GET_HEADERS_LENGTH               ( sizeof( HTTP_TEST_REQUEST_GET_HEADERS ) - 1U )
+#define HTTP_TEST_REQUEST_GET_HEADERS_LENGTH \
+    ( sizeof( HTTP_TEST_REQUEST_GET_HEADERS ) - 1U )
 
 /* HTTP OK Status-Line. */
-#define HTTP_STATUS_LINE_OK                                "HTTP/1.1 200 OK\r\n"
-#define HTTP_STATUS_CODE_OK                                200
+#define HTTP_STATUS_LINE_OK                         "HTTP/1.1 200 OK\r\n"
+#define HTTP_STATUS_CODE_OK                         200
 
 /* Various header lines for test response templates. */
-#define HTTP_TEST_CONTENT_LENGTH_HEADER_LINE               "Content-Length: 43\r\n"
-#define HTTP_TEST_DATE_HEADER_LINE                         "Date: Sun, 14 Jul 2019 06:07:52 GMT\r\n"
-#define HTTP_TEST_ETAG_HEADER_LINE                         "ETag: \"3356-5233\"\r\n"
-#define HTTP_TEST_VARY_HEADER_LINE                         "Vary: *\r\n"
-#define HTTP_TEST_P3P_HEADER_LINE                          "P3P: CP=\"This is not a P3P policy\"\r\n"
-#define HTTP_TEST_XSERVER_HEADER_LINE                      "xserver: www1021\r\n"
-#define HTTP_TEST_CONNECTION_CLOSE_HEADER_LINE             "Connection: close\r\n"
-#define HTTP_TEST_CONNECTION_KEEP_ALIVE_HEADER_LINE        "Connection: keep-alive\r\n"
-#define HTTP_TEST_TRANSFER_ENCODING_CHUNKED_HEADER_LINE    "Transfer-Encoding: chunked\r\n"
+#define HTTP_TEST_CONTENT_LENGTH_HEADER_LINE        "Content-Length: 43\r\n"
+#define HTTP_TEST_DATE_HEADER_LINE                  "Date: Sun, 14 Jul 2019 06:07:52 GMT\r\n"
+#define HTTP_TEST_ETAG_HEADER_LINE                  "ETag: \"3356-5233\"\r\n"
+#define HTTP_TEST_VARY_HEADER_LINE                  "Vary: *\r\n"
+#define HTTP_TEST_P3P_HEADER_LINE                   "P3P: CP=\"This is not a P3P policy\"\r\n"
+#define HTTP_TEST_XSERVER_HEADER_LINE               "xserver: www1021\r\n"
+#define HTTP_TEST_CONNECTION_CLOSE_HEADER_LINE      "Connection: close\r\n"
+#define HTTP_TEST_CONNECTION_KEEP_ALIVE_HEADER_LINE "Connection: keep-alive\r\n"
+#define HTTP_TEST_TRANSFER_ENCODING_CHUNKED_HEADER_LINE \
+    "Transfer-Encoding: chunked\r\n"
 
 /* Partial header field and value for testing partial header field and value
  * handling in parser callback. */
-#define HTTP_TEST_CONTENT_LENGTH_PARTIAL_HEADER_FIELD      "Content-Len"
-#define HTTP_TEST_CONTENT_LENGTH_PARTIAL_HEADER_VALUE      "Content-Length: 4"
+#define HTTP_TEST_CONTENT_LENGTH_PARTIAL_HEADER_FIELD "Content-Len"
+#define HTTP_TEST_CONTENT_LENGTH_PARTIAL_HEADER_VALUE "Content-Length: 4"
 
 /* Template HTTP HEAD response. */
 #define HTTP_TEST_RESPONSE_HEAD            \
@@ -103,11 +111,16 @@
     HTTP_TEST_VARY_HEADER_LINE             \
     HTTP_TEST_P3P_HEADER_LINE              \
     HTTP_TEST_XSERVER_HEADER_LINE HTTP_HEADER_LINE_SEPARATOR
-#define HTTP_TEST_RESPONSE_HEAD_LENGTH                         ( sizeof( HTTP_TEST_RESPONSE_HEAD ) - 1U )
-#define HTTP_TEST_RESPONSE_HEAD_HEADER_COUNT                   7
-#define HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH                 43
-#define HTTP_TEST_RESPONSE_HEAD_PARTIAL_HEADER_FIELD_LENGTH    ( sizeof( HTTP_STATUS_LINE_OK ) + sizeof( HTTP_TEST_CONTENT_LENGTH_PARTIAL_HEADER_FIELD ) - 2U )
-#define HTTP_TEST_RESPONSE_HEAD_PARTIAL_HEADER_VALUE_LENGTH    ( sizeof( HTTP_STATUS_LINE_OK ) + sizeof( HTTP_TEST_CONTENT_LENGTH_PARTIAL_HEADER_VALUE ) - 2U )
+#define HTTP_TEST_RESPONSE_HEAD_LENGTH \
+    ( sizeof( HTTP_TEST_RESPONSE_HEAD ) - 1U )
+#define HTTP_TEST_RESPONSE_HEAD_HEADER_COUNT   7
+#define HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH 43
+#define HTTP_TEST_RESPONSE_HEAD_PARTIAL_HEADER_FIELD_LENGTH \
+    ( sizeof( HTTP_STATUS_LINE_OK ) +                       \
+      sizeof( HTTP_TEST_CONTENT_LENGTH_PARTIAL_HEADER_FIELD ) - 2U )
+#define HTTP_TEST_RESPONSE_HEAD_PARTIAL_HEADER_VALUE_LENGTH \
+    ( sizeof( HTTP_STATUS_LINE_OK ) +                       \
+      sizeof( HTTP_TEST_CONTENT_LENGTH_PARTIAL_HEADER_VALUE ) - 2U )
 
 /* Template HTTP PUT response. This has no body. */
 #define HTTP_TEST_RESPONSE_PUT                  \
@@ -118,19 +131,23 @@
     HTTP_TEST_VARY_HEADER_LINE                  \
     HTTP_TEST_P3P_HEADER_LINE                   \
     HTTP_TEST_XSERVER_HEADER_LINE HTTP_HEADER_LINE_SEPARATOR
-#define HTTP_TEST_RESPONSE_PUT_LENGTH          ( sizeof( HTTP_TEST_RESPONSE_PUT ) - 1U )
-#define HTTP_TEST_RESPONSE_PUT_HEADER_COUNT    6
+#define HTTP_TEST_RESPONSE_PUT_LENGTH       ( sizeof( HTTP_TEST_RESPONSE_PUT ) - 1U )
+#define HTTP_TEST_RESPONSE_PUT_HEADER_COUNT 6
 
 /* Template HTTP GET response. */
 #define HTTP_TEST_RESPONSE_GET \
     HTTP_TEST_RESPONSE_HEAD    \
     "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopq"
-#define HTTP_TEST_RESPONSE_GET_LENGTH                 ( sizeof( HTTP_TEST_RESPONSE_GET ) - 1U )
-#define HTTP_TEST_RESPONSE_GET_HEADER_COUNT           HTTP_TEST_RESPONSE_HEAD_HEADER_COUNT
-#define HTTP_TEST_RESPONSE_GET_HEADERS_LENGTH         ( HTTP_TEST_RESPONSE_HEAD_LENGTH - ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ) )
-#define HTTP_TEST_RESPONSE_GET_BODY_LENGTH            HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH
-#define HTTP_TEST_RESPONSE_GET_CONTENT_LENGTH         HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH
-#define HTTP_TEST_RESPONSE_GET_PARTIAL_BODY_LENGTH    ( HTTP_TEST_RESPONSE_GET_LENGTH - 13U )
+#define HTTP_TEST_RESPONSE_GET_LENGTH       ( sizeof( HTTP_TEST_RESPONSE_GET ) - 1U )
+#define HTTP_TEST_RESPONSE_GET_HEADER_COUNT HTTP_TEST_RESPONSE_HEAD_HEADER_COUNT
+#define HTTP_TEST_RESPONSE_GET_HEADERS_LENGTH \
+    ( HTTP_TEST_RESPONSE_HEAD_LENGTH - ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ) )
+#define HTTP_TEST_RESPONSE_GET_BODY_LENGTH \
+    HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH
+#define HTTP_TEST_RESPONSE_GET_CONTENT_LENGTH \
+    HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH
+#define HTTP_TEST_RESPONSE_GET_PARTIAL_BODY_LENGTH \
+    ( HTTP_TEST_RESPONSE_GET_LENGTH - 13U )
 
 /* Template HTTP transfer-encoding chunked response. */
 #define HTTP_TEST_RESPONSE_CHUNKED                           \
@@ -142,34 +159,36 @@
     HTTP_TEST_VARY_HEADER_LINE                               \
     HTTP_TEST_P3P_HEADER_LINE                                \
     HTTP_TEST_XSERVER_HEADER_LINE HTTP_HEADER_LINE_SEPARATOR \
-    "b\r\n"                                                  \
-    "abcdefghijk\r\n"                                        \
-    "c\r\n"                                                  \
-    "lmnopqrstuvw\r\n"                                       \
-    "3\r\n"                                                  \
-    "xyz\r\n"                                                \
-    "0\r\n"                                                  \
-    "\r\n"
-#define HTTP_TEST_RESPONSE_CHUNKED_LENGTH          ( sizeof( HTTP_TEST_RESPONSE_CHUNKED ) - 1U )
-#define HTTP_TEST_RESPONSE_CHUNKED_HEADER_COUNT    7
-#define HTTP_TEST_RESPONSE_CHUNKED_BODY_LENGTH     26
+        "b\r\n"                                              \
+        "abcdefghijk\r\n"                                    \
+        "c\r\n"                                              \
+        "lmnopqrstuvw\r\n"                                   \
+        "3\r\n"                                              \
+        "xyz\r\n"                                            \
+        "0\r\n"                                              \
+        "\r\n"
+#define HTTP_TEST_RESPONSE_CHUNKED_LENGTH \
+    ( sizeof( HTTP_TEST_RESPONSE_CHUNKED ) - 1U )
+#define HTTP_TEST_RESPONSE_CHUNKED_HEADER_COUNT 7
+#define HTTP_TEST_RESPONSE_CHUNKED_BODY_LENGTH  26
 #define HTTP_TEST_RESPONSE_CHUNKED_HEADERS_LENGTH               \
     sizeof( HTTP_TEST_TRANSFER_ENCODING_CHUNKED_HEADER_LINE ) + \
-    sizeof( HTTP_TEST_CONNECTION_KEEP_ALIVE_HEADER_LINE ) +     \
-    sizeof( HTTP_TEST_DATE_HEADER_LINE ) +                      \
-    sizeof( HTTP_TEST_ETAG_HEADER_LINE ) +                      \
-    sizeof( HTTP_TEST_VARY_HEADER_LINE ) +                      \
-    sizeof( HTTP_TEST_P3P_HEADER_LINE ) +                       \
-    sizeof( HTTP_TEST_XSERVER_HEADER_LINE ) +                   \
-    HTTP_HEADER_LINE_SEPARATOR_LEN - 7U
+        sizeof( HTTP_TEST_CONNECTION_KEEP_ALIVE_HEADER_LINE ) + \
+        sizeof( HTTP_TEST_DATE_HEADER_LINE ) +                  \
+        sizeof( HTTP_TEST_ETAG_HEADER_LINE ) +                  \
+        sizeof( HTTP_TEST_VARY_HEADER_LINE ) +                  \
+        sizeof( HTTP_TEST_P3P_HEADER_LINE ) +                   \
+        sizeof( HTTP_TEST_XSERVER_HEADER_LINE ) +               \
+        HTTP_HEADER_LINE_SEPARATOR_LEN - 7U
 
 /* Template HTTP response with no headers. */
 #define HTTP_TEST_RESPONSE_NO_HEADERS \
     HTTP_STATUS_LINE_OK HTTP_HEADER_LINE_SEPARATOR
-#define HTTP_TEST_RESPONSE_NO_HEADERS_LENGTH    ( sizeof( HTTP_TEST_RESPONSE_NO_HEADERS ) - 1U )
+#define HTTP_TEST_RESPONSE_NO_HEADERS_LENGTH \
+    ( sizeof( HTTP_TEST_RESPONSE_NO_HEADERS ) - 1U )
 
 /* Test buffer to share among the test. */
-#define HTTP_TEST_BUFFER_LENGTH                 1024
+#define HTTP_TEST_BUFFER_LENGTH 1024
 
 /* Mock a NetworkContext structure for the test. */
 struct NetworkContext
@@ -190,7 +209,8 @@ static uint8_t headerCallbackCount = 0;
 
 /* The count of times a test invoked the transport send interface. */
 static uint8_t sendCurrentCall = 0;
-/* Set this to 1 to enable checking that the Content-Length header generated is correct. */
+/* Set this to 1 to enable checking that the Content-Length header generated is
+ * correct. */
 static uint8_t checkContentLength = 0;
 
 /* The test sets this variable to indicate at which call count of transport send
@@ -299,12 +319,17 @@ static int32_t transportSendSuccess( NetworkContext_t * pNetworkContext,
     {
         if( sendCurrentCall == 1U )
         {
-            size_t contentLengthAndHeaderEndLen = HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED_LENGTH;
-            char * pContentLengthStart = ( ( ( char * ) pBuffer ) + bytesToWrite ) - contentLengthAndHeaderEndLen;
-            TEST_ASSERT_GREATER_OR_EQUAL( contentLengthAndHeaderEndLen, bytesToWrite );
-            TEST_ASSERT_EQUAL_MEMORY( HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED,
-                                      pContentLengthStart,
-                                      HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED_LENGTH );
+            size_t contentLengthAndHeaderEndLen =
+                HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED_LENGTH;
+            char * pContentLengthStart = ( ( ( char * ) pBuffer ) +
+                                           bytesToWrite ) -
+                                         contentLengthAndHeaderEndLen;
+            TEST_ASSERT_GREATER_OR_EQUAL( contentLengthAndHeaderEndLen,
+                                          bytesToWrite );
+            TEST_ASSERT_EQUAL_MEMORY(
+                HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED,
+                pContentLengthStart,
+                HTTP_TEST_REQUEST_PUT_CONTENT_LENGTH_EXPECTED_LENGTH );
         }
     }
 
@@ -312,8 +337,8 @@ static int32_t transportSendSuccess( NetworkContext_t * pNetworkContext,
 }
 
 /* Application transport send interface that returns a network error depending
-* on the call count. Set sendErrorCall to 0 to return an error on the
-* first call. Set sendErrorCall to 1 to return an error on the second call. */
+ * on the call count. Set sendErrorCall to 0 to return an error on the
+ * first call. Set sendErrorCall to 1 to return an error on the second call. */
 static int32_t transportSendNetworkError( NetworkContext_t * pNetworkContext,
                                           const void * pBuffer,
                                           size_t bytesToWrite )
@@ -437,18 +462,19 @@ static void helper_parse_status_line( const char ** pNext,
     /* For purposes of unit testing the response is well formed in the non-error
      * cases, so the reason-phrase is always after HTTP/1.1 and the three digit
      * status code. strchr() is used only for unit testing where test input are
-     * always string literals. strchr() should not be used in application code. */
-    *pNext = strchr( *pNext, SPACE_CHARACTER ); /* Get the space before the status-code. */
+     * always string literals. strchr() should not be used in application code.
+     */
+    *pNext = strchr( *pNext, SPACE_CHARACTER ); /* Get the space before the
+                                                   status-code. */
     *pNext += SPACE_CHARACTER_LEN;
-    *pNext = strchr( *pNext, SPACE_CHARACTER ); /* Get the space before the reason-phrase. */
+    *pNext = strchr( *pNext, SPACE_CHARACTER ); /* Get the space before the
+                                                   reason-phrase. */
     *pNext += SPACE_CHARACTER_LEN;
     pReasonPhraseStart = *pNext;
     *pNext = strstr( *pNext, HTTP_HEADER_LINE_SEPARATOR );
     reasonPhraseStartLen = ( size_t ) ( *pNext - pReasonPhraseStart );
     pParser->status_code = 200;
-    pSettings->on_status( pParser,
-                          pReasonPhraseStart,
-                          reasonPhraseStartLen );
+    pSettings->on_status( pParser, pReasonPhraseStart, reasonPhraseStartLen );
 
     *pNext += HTTP_HEADER_LINE_SEPARATOR_LEN;
 }
@@ -468,14 +494,18 @@ static void helper_parse_headers( const char ** pNext,
         pHeaderFieldStart = *pNext;
         *pNext = strstr( *pNext, HTTP_HEADER_FIELD_SEPARATOR );
         headerFieldLen = ( size_t ) ( *pNext - pHeaderFieldStart );
-        pSettings->on_header_field( pParser, pHeaderFieldStart, headerFieldLen );
+        pSettings->on_header_field( pParser,
+                                    pHeaderFieldStart,
+                                    headerFieldLen );
 
         *pNext += HTTP_HEADER_FIELD_SEPARATOR_LEN;
 
         pHeaderValueStart = *pNext;
         *pNext = strstr( *pNext, HTTP_HEADER_LINE_SEPARATOR );
         headerValueLen = ( size_t ) ( *pNext - pHeaderValueStart );
-        pSettings->on_header_value( pParser, pHeaderValueStart, headerValueLen );
+        pSettings->on_header_value( pParser,
+                                    pHeaderValueStart,
+                                    headerValueLen );
 
         *pNext += HTTP_HEADER_LINE_SEPARATOR_LEN;
     }
@@ -561,7 +591,8 @@ static llhttp_errno_t llhttp_execute_whole_response( llhttp_t * pParser,
     return HPE_OK;
 }
 
-/* Mocked llhttp_execute callback that expects upgrade header in HTTP response. */
+/* Mocked llhttp_execute callback that expects upgrade header in HTTP response.
+ */
 static llhttp_errno_t llhttp_execute_paused_upgrade( llhttp_t * pParser,
                                                      const char * pData,
                                                      size_t len,
@@ -605,7 +636,9 @@ static llhttp_errno_t llhttp_execute_partial_header_field( llhttp_t * pParser,
         /* pNext now points to the start of the partial header field. */
         pHeaderFieldStart = pNext;
         headerFieldLen = len - ( size_t ) ( pHeaderFieldStart - pData );
-        pSettings->on_header_field( pParser, pHeaderFieldStart, headerFieldLen );
+        pSettings->on_header_field( pParser,
+                                    pHeaderFieldStart,
+                                    headerFieldLen );
     }
     else
     {
@@ -618,8 +651,16 @@ static llhttp_errno_t llhttp_execute_partial_header_field( llhttp_t * pParser,
         }
 
         helper_parse_headers( &pNext, pParser, pSettings );
-        helper_parse_headers_finish( &pNext, pParser, pSettings, &isHeadResponse );
-        helper_parse_body( &pNext, pParser, pSettings, isHeadResponse, pData, len );
+        helper_parse_headers_finish( &pNext,
+                                     pParser,
+                                     pSettings,
+                                     &isHeadResponse );
+        helper_parse_body( &pNext,
+                           pParser,
+                           pSettings,
+                           isHeadResponse,
+                           pData,
+                           len );
         pSettings->on_message_complete( pParser );
     }
 
@@ -656,14 +697,18 @@ static llhttp_errno_t llhttp_execute_partial_header_value( llhttp_t * pParser,
         pHeaderFieldStart = pNext;
         pNext = strstr( pNext, HTTP_HEADER_FIELD_SEPARATOR );
         headerFieldLen = ( size_t ) ( pNext - pHeaderFieldStart );
-        pSettings->on_header_field( pParser, pHeaderFieldStart, headerFieldLen );
+        pSettings->on_header_field( pParser,
+                                    pHeaderFieldStart,
+                                    headerFieldLen );
 
         pNext += HTTP_HEADER_FIELD_SEPARATOR_LEN;
 
         /* pNext now points to the start of the partial header value. */
         pHeaderValueStart = pNext;
         headerValueLen = len - ( size_t ) ( pHeaderValueStart - pData );
-        pSettings->on_header_value( pParser, pHeaderValueStart, headerValueLen );
+        pSettings->on_header_value( pParser,
+                                    pHeaderValueStart,
+                                    headerValueLen );
     }
     else
     {
@@ -672,13 +717,23 @@ static llhttp_errno_t llhttp_execute_partial_header_value( llhttp_t * pParser,
         pHeaderValueStart = pNext;
         pNext = strstr( pNext, HTTP_HEADER_LINE_SEPARATOR );
         headerValueLen = ( size_t ) ( pNext - pHeaderValueStart );
-        pSettings->on_header_value( pParser, pHeaderValueStart, headerValueLen );
+        pSettings->on_header_value( pParser,
+                                    pHeaderValueStart,
+                                    headerValueLen );
 
         pNext += HTTP_HEADER_FIELD_SEPARATOR_LEN;
 
         helper_parse_headers( &pNext, pParser, pSettings );
-        helper_parse_headers_finish( &pNext, pParser, pSettings, &isHeadResponse );
-        helper_parse_body( &pNext, pParser, pSettings, isHeadResponse, pData, len );
+        helper_parse_headers_finish( &pNext,
+                                     pParser,
+                                     pSettings,
+                                     &isHeadResponse );
+        helper_parse_body( &pNext,
+                           pParser,
+                           pSettings,
+                           isHeadResponse,
+                           pData,
+                           len );
 
         pSettings->on_message_complete( pParser );
     }
@@ -797,7 +852,9 @@ void setUp( void )
     transportInterface.pNetworkContext = NULL;
     requestHeaders.pBuffer = httpBuffer;
     requestHeaders.bufferLen = sizeof( httpBuffer );
-    memcpy( requestHeaders.pBuffer, HTTP_TEST_REQUEST_HEAD_HEADERS, HTTP_TEST_REQUEST_HEAD_HEADERS_LENGTH );
+    memcpy( requestHeaders.pBuffer,
+            HTTP_TEST_REQUEST_HEAD_HEADERS,
+            HTTP_TEST_REQUEST_HEAD_HEADERS_LENGTH );
     requestHeaders.headersLen = HTTP_TEST_REQUEST_HEAD_HEADERS_LENGTH;
     memset( &response, 0, sizeof( HTTPResponse_t ) );
     headerParsingCallback.onHeaderCallback = onHeaderCallback;
@@ -834,14 +891,22 @@ void test_HTTPClient_Send_HEAD_request_parse_whole_response( void )
     TEST_ASSERT_EQUAL( HTTPSuccess, returnStatus );
     TEST_ASSERT_EQUAL( NULL, response.pBody );
     TEST_ASSERT_EQUAL( 0U, response.bodyLen );
-    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ), response.pHeaders );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_LENGTH - ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ) - HTTP_HEADER_END_INDICATOR_LEN,
+    TEST_ASSERT_EQUAL( response.pBuffer +
+                           ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ),
+                       response.pHeaders );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_LENGTH -
+                           ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ) -
+                           HTTP_HEADER_END_INDICATOR_LEN,
                        response.headersLen );
     TEST_ASSERT_EQUAL( HTTP_STATUS_CODE_OK, response.statusCode );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH, response.contentLength );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_HEADER_COUNT, response.headerCount );
-    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG, response.respFlags );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG, response.respFlags );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH,
+                       response.contentLength );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_HEADER_COUNT,
+                       response.headerCount );
+    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG,
+                           response.respFlags );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG,
+                          response.respFlags );
 }
 
 /*-----------------------------------------------------------*/
@@ -871,16 +936,22 @@ void test_HTTPClient_Send_PUT_request_parse_whole_response( void )
                                     0 );
 
     TEST_ASSERT_EQUAL( HTTPSuccess, returnStatus );
-    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ), response.pHeaders );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_LENGTH - ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ) - HTTP_HEADER_END_INDICATOR_LEN,
+    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ),
+                       response.pHeaders );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_LENGTH -
+                           ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ) -
+                           HTTP_HEADER_END_INDICATOR_LEN,
                        response.headersLen );
     TEST_ASSERT_EQUAL( NULL, response.pBody );
     TEST_ASSERT_EQUAL( 0, response.bodyLen );
     TEST_ASSERT_EQUAL( HTTP_STATUS_CODE_OK, response.statusCode );
     TEST_ASSERT_EQUAL( 0, response.contentLength );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_HEADER_COUNT, response.headerCount );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG, response.respFlags );
-    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG, response.respFlags );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_HEADER_COUNT,
+                       response.headerCount );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG,
+                          response.respFlags );
+    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG,
+                           response.respFlags );
 }
 
 /*-----------------------------------------------------------*/
@@ -908,21 +979,28 @@ void test_HTTPClient_Send_GET_request_parse_whole_response( void )
                                     0 );
 
     TEST_ASSERT_EQUAL( HTTPSuccess, returnStatus );
-    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ), response.pHeaders );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_HEADERS_LENGTH - HTTP_HEADER_END_INDICATOR_LEN,
+    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ),
+                       response.pHeaders );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_HEADERS_LENGTH -
+                           HTTP_HEADER_END_INDICATOR_LEN,
                        response.headersLen );
     TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_BODY_LENGTH, response.bodyLen );
     TEST_ASSERT_EQUAL( HTTP_STATUS_CODE_OK, response.statusCode );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_CONTENT_LENGTH, response.contentLength );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_HEADER_COUNT, response.headerCount );
-    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG, response.respFlags );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG, response.respFlags );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_CONTENT_LENGTH,
+                       response.contentLength );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_HEADER_COUNT,
+                       response.headerCount );
+    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG,
+                           response.respFlags );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG,
+                          response.respFlags );
 }
 
 /*-----------------------------------------------------------*/
 
 /* Test successfully parsing a response where there are no headers. The full
- * response message is present in the response buffer on the first network read. */
+ * response message is present in the response buffer on the first network read.
+ */
 void test_HTTPClient_Send_no_response_headers( void )
 {
     HTTPStatus_t returnStatus = HTTPSuccess;
@@ -947,8 +1025,10 @@ void test_HTTPClient_Send_no_response_headers( void )
     TEST_ASSERT_EQUAL( HTTP_STATUS_CODE_OK, response.statusCode );
     TEST_ASSERT_EQUAL( 0, response.contentLength );
     TEST_ASSERT_EQUAL( 0, response.headerCount );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG, response.respFlags );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG, response.respFlags );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG,
+                          response.respFlags );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG,
+                          response.respFlags );
 }
 
 /*-----------------------------------------------------------*/
@@ -972,14 +1052,22 @@ void test_HTTPClient_Send_parse_partial_header_field( void )
     TEST_ASSERT_EQUAL( HTTPSuccess, returnStatus );
     TEST_ASSERT_EQUAL( NULL, response.pBody );
     TEST_ASSERT_EQUAL( 0, response.bodyLen );
-    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ), response.pHeaders );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_LENGTH - ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ) - HTTP_HEADER_END_INDICATOR_LEN,
+    TEST_ASSERT_EQUAL( response.pBuffer +
+                           ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ),
+                       response.pHeaders );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_LENGTH -
+                           ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ) -
+                           HTTP_HEADER_END_INDICATOR_LEN,
                        response.headersLen );
     TEST_ASSERT_EQUAL( HTTP_STATUS_CODE_OK, response.statusCode );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH, response.contentLength );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_HEADER_COUNT, response.headerCount );
-    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG, response.respFlags );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG, response.respFlags );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH,
+                       response.contentLength );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_HEADER_COUNT,
+                       response.headerCount );
+    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG,
+                           response.respFlags );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG,
+                          response.respFlags );
 }
 
 /*-----------------------------------------------------------*/
@@ -1003,14 +1091,22 @@ void test_HTTPClient_Send_parse_partial_header_value( void )
     TEST_ASSERT_EQUAL( HTTPSuccess, returnStatus );
     TEST_ASSERT_EQUAL( NULL, response.pBody );
     TEST_ASSERT_EQUAL( 0, response.bodyLen );
-    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ), response.pHeaders );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_LENGTH - ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ) - HTTP_HEADER_END_INDICATOR_LEN,
+    TEST_ASSERT_EQUAL( response.pBuffer +
+                           ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ),
+                       response.pHeaders );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_LENGTH -
+                           ( sizeof( HTTP_STATUS_LINE_OK ) - 1U ) -
+                           HTTP_HEADER_END_INDICATOR_LEN,
                        response.headersLen );
     TEST_ASSERT_EQUAL( HTTP_STATUS_CODE_OK, response.statusCode );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH, response.contentLength );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_HEADER_COUNT, response.headerCount );
-    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG, response.respFlags );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG, response.respFlags );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_CONTENT_LENGTH,
+                       response.contentLength );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_HEAD_HEADER_COUNT,
+                       response.headerCount );
+    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG,
+                           response.respFlags );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG,
+                          response.respFlags );
 }
 
 /*-----------------------------------------------------------*/
@@ -1038,16 +1134,24 @@ void test_HTTPClient_Send_parse_partial_body( void )
                                     &response,
                                     0 );
     TEST_ASSERT_EQUAL( HTTPSuccess, returnStatus );
-    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ), response.pHeaders );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_HEADERS_LENGTH - HTTP_HEADER_END_INDICATOR_LEN,
+    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ),
+                       response.pHeaders );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_HEADERS_LENGTH -
+                           HTTP_HEADER_END_INDICATOR_LEN,
                        response.headersLen );
-    TEST_ASSERT_EQUAL( response.pHeaders + HTTP_TEST_RESPONSE_GET_HEADERS_LENGTH, response.pBody );
+    TEST_ASSERT_EQUAL( response.pHeaders +
+                           HTTP_TEST_RESPONSE_GET_HEADERS_LENGTH,
+                       response.pBody );
     TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_BODY_LENGTH, response.bodyLen );
     TEST_ASSERT_EQUAL( HTTP_STATUS_CODE_OK, response.statusCode );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_CONTENT_LENGTH, response.contentLength );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_HEADER_COUNT, response.headerCount );
-    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG, response.respFlags );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG, response.respFlags );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_CONTENT_LENGTH,
+                       response.contentLength );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_GET_HEADER_COUNT,
+                       response.headerCount );
+    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG,
+                           response.respFlags );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG,
+                          response.respFlags );
 }
 
 /*-----------------------------------------------------------*/
@@ -1074,15 +1178,21 @@ void test_HTTPClient_Send_parse_chunked_body( void )
                                     0 );
 
     TEST_ASSERT_EQUAL( HTTPSuccess, returnStatus );
-    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ), response.pHeaders );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_CHUNKED_HEADERS_LENGTH - HTTP_HEADER_END_INDICATOR_LEN,
+    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ),
+                       response.pHeaders );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_CHUNKED_HEADERS_LENGTH -
+                           HTTP_HEADER_END_INDICATOR_LEN,
                        response.headersLen );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_CHUNKED_BODY_LENGTH, response.bodyLen );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_CHUNKED_BODY_LENGTH,
+                       response.bodyLen );
     TEST_ASSERT_EQUAL( HTTP_STATUS_CODE_OK, response.statusCode );
     TEST_ASSERT_EQUAL( 0, response.contentLength );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_CHUNKED_HEADER_COUNT, response.headerCount );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG, response.respFlags );
-    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG, response.respFlags );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_CHUNKED_HEADER_COUNT,
+                       response.headerCount );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG,
+                          response.respFlags );
+    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG,
+                           response.respFlags );
 }
 
 /*-----------------------------------------------------------*/
@@ -1148,9 +1258,9 @@ void test_HTTPClient_Send_timeout_recv_retry( void )
     /* On the first call to the transport receive, return a zero. */
     recvTimeoutCall = 1;
 
-    /* With HTTP_RECV_RETRY_TIMEOUT_MS set to greater than 1U in core_http_config.h
-     * we ensure that the retry timeout is not reached and the transport receive
-     * is called again. */
+    /* With HTTP_RECV_RETRY_TIMEOUT_MS set to greater than 1U in
+     * core_http_config.h we ensure that the retry timeout is not reached and
+     * the transport receive is called again. */
 
     returnStatus = HTTPClient_Send( &transportInterface,
                                     &requestHeaders,
@@ -1163,8 +1273,8 @@ void test_HTTPClient_Send_timeout_recv_retry( void )
 
 /*-----------------------------------------------------------*/
 
-/* Test the buffer limit is reached on the network read, but the parser indicated
- * the response is not complete. */
+/* Test the buffer limit is reached on the network read, but the parser
+ * indicated the response is not complete. */
 void test_HTTPClient_Send_response_larger_than_buffer( void )
 {
     HTTPStatus_t returnStatus = HTTPSuccess;
@@ -1337,16 +1447,22 @@ void test_HTTPClient_Send_less_bytes_request_headers( void )
                                     0 );
 
     TEST_ASSERT_EQUAL( HTTPSuccess, returnStatus );
-    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ), response.pHeaders );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_LENGTH - ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ) - HTTP_HEADER_END_INDICATOR_LEN,
+    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ),
+                       response.pHeaders );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_LENGTH -
+                           ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ) -
+                           HTTP_HEADER_END_INDICATOR_LEN,
                        response.headersLen );
     TEST_ASSERT_EQUAL( NULL, response.pBody );
     TEST_ASSERT_EQUAL( 0, response.bodyLen );
     TEST_ASSERT_EQUAL( HTTP_STATUS_CODE_OK, response.statusCode );
     TEST_ASSERT_EQUAL( 0, response.contentLength );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_HEADER_COUNT, response.headerCount );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG, response.respFlags );
-    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG, response.respFlags );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_HEADER_COUNT,
+                       response.headerCount );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG,
+                          response.respFlags );
+    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG,
+                           response.respFlags );
 }
 
 /*-----------------------------------------------------------*/
@@ -1379,16 +1495,22 @@ void test_HTTPClient_Send_less_bytes_request_body( void )
                                     HTTP_SEND_DISABLE_CONTENT_LENGTH_FLAG );
 
     TEST_ASSERT_EQUAL( HTTPSuccess, returnStatus );
-    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ), response.pHeaders );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_LENGTH - ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ) - HTTP_HEADER_END_INDICATOR_LEN,
+    TEST_ASSERT_EQUAL( response.pBuffer + ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ),
+                       response.pHeaders );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_LENGTH -
+                           ( sizeof( HTTP_STATUS_LINE_OK ) - 1 ) -
+                           HTTP_HEADER_END_INDICATOR_LEN,
                        response.headersLen );
     TEST_ASSERT_EQUAL( NULL, response.pBody );
     TEST_ASSERT_EQUAL( 0, response.bodyLen );
     TEST_ASSERT_EQUAL( HTTP_STATUS_CODE_OK, response.statusCode );
     TEST_ASSERT_EQUAL( 0, response.contentLength );
-    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_HEADER_COUNT, response.headerCount );
-    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG, response.respFlags );
-    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG, response.respFlags );
+    TEST_ASSERT_EQUAL( HTTP_TEST_RESPONSE_PUT_HEADER_COUNT,
+                       response.headerCount );
+    TEST_ASSERT_BITS_LOW( HTTP_RESPONSE_CONNECTION_CLOSE_FLAG,
+                          response.respFlags );
+    TEST_ASSERT_BITS_HIGH( HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG,
+                           response.respFlags );
 }
 
 /*-----------------------------------------------------------*/

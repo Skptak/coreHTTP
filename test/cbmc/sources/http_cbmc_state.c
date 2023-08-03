@@ -4,22 +4,23 @@
  *
  * SPDX-License-Identifier: MIT
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 /**
@@ -33,11 +34,13 @@
 
 void * mallocCanFail( size_t size )
 {
-    __CPROVER_assert( size < CBMC_MAX_OBJECT_SIZE, "mallocCanFail size is too big" );
+    __CPROVER_assert( size < CBMC_MAX_OBJECT_SIZE,
+                      "mallocCanFail size is too big" );
     return malloc( size );
 }
 
-HTTPRequestHeaders_t * allocateHttpRequestHeaders( HTTPRequestHeaders_t * pRequestHeaders )
+HTTPRequestHeaders_t * allocateHttpRequestHeaders(
+    HTTPRequestHeaders_t * pRequestHeaders )
 {
     if( pRequestHeaders == NULL )
     {
@@ -120,17 +123,19 @@ HTTPResponse_t * allocateHttpResponse( HTTPResponse_t * pResponse )
 
         if( pResponse->pBuffer != NULL )
         {
-            /* It is possible to have no headers in the response so set to NULL or
-             * an offset in the response buffer. */
-            pResponse->pHeaders = nondet_bool() ? NULL :
-                                  pResponse->pBuffer + headerOffset;
+            /* It is possible to have no headers in the response so set to NULL
+             * or an offset in the response buffer. */
+            pResponse->pHeaders = nondet_bool()
+                                      ? NULL
+                                      : pResponse->pBuffer + headerOffset;
         }
 
         if( pResponse->pHeaders != NULL )
         {
             /* The length of the headers MUST be between the start of the
              * headers and the end of the buffer. */
-            __CPROVER_assume( pResponse->headersLen < ( pResponse->bufferLen - headerOffset ) );
+            __CPROVER_assume( pResponse->headersLen <
+                              ( pResponse->bufferLen - headerOffset ) );
         }
 
         if( pResponse->bufferLen == 0 )
@@ -144,15 +149,16 @@ HTTPResponse_t * allocateHttpResponse( HTTPResponse_t * pResponse )
 
         if( pResponse->pBuffer != NULL )
         {
-            pResponse->pBody = nondet_bool() ? NULL :
-                               pResponse->pBuffer + bodyOffset;
+            pResponse->pBody = nondet_bool() ? NULL
+                                             : pResponse->pBuffer + bodyOffset;
         }
 
         /* The length of the body MUST be between the start of body and the end
          * of the buffer. */
         if( pResponse->pBody )
         {
-            __CPROVER_assume( pResponse->bodyLen < ( pResponse->bufferLen - bodyOffset ) );
+            __CPROVER_assume( pResponse->bodyLen <
+                              ( pResponse->bufferLen - bodyOffset ) );
         }
     }
 
@@ -174,7 +180,8 @@ bool isValidHttpResponse( const HTTPResponse_t * pResponse )
     return isValid;
 }
 
-TransportInterface_t * allocateTransportInterface( TransportInterface_t * pTransport )
+TransportInterface_t * allocateTransportInterface(
+    TransportInterface_t * pTransport )
 {
     if( pTransport == NULL )
     {
@@ -183,7 +190,8 @@ TransportInterface_t * allocateTransportInterface( TransportInterface_t * pTrans
 
     if( pTransport != NULL )
     {
-        pTransport->pNetworkContext = mallocCanFail( sizeof( NetworkContext_t ) );
+        pTransport->pNetworkContext = mallocCanFail(
+            sizeof( NetworkContext_t ) );
     }
 
     return pTransport;
@@ -195,9 +203,11 @@ bool isValidTransportInterface( TransportInterface_t * pTransportInterface )
 
     if( pTransportInterface )
     {
-        isValid = isValid && ( pTransportInterface->send == TransportInterfaceSendStub ||
-                               pTransportInterface->send == NULL );
-        isValid = isValid && ( pTransportInterface->recv == TransportInterfaceReceiveStub ||
+        isValid = isValid &&
+                  ( pTransportInterface->send == TransportInterfaceSendStub ||
+                    pTransportInterface->send == NULL );
+        isValid = isValid && ( pTransportInterface->recv ==
+                                   TransportInterfaceReceiveStub ||
                                pTransportInterface->recv == NULL );
     }
 }
@@ -219,7 +229,8 @@ llhttp_t * allocateHttpSendParser( llhttp_t * pHttpParser )
     return pHttpParser;
 }
 
-HTTPParsingContext_t * allocateHttpSendParsingContext( HTTPParsingContext_t * pHttpParsingContext )
+HTTPParsingContext_t * allocateHttpSendParsingContext(
+    HTTPParsingContext_t * pHttpParsingContext )
 {
     HTTPResponse_t * pResponse;
     size_t bufferOffset;
@@ -231,8 +242,7 @@ HTTPParsingContext_t * allocateHttpSendParsingContext( HTTPParsingContext_t * pH
 
         pResponse = allocateHttpResponse( NULL );
         __CPROVER_assume( isValidHttpResponse( pResponse ) &&
-                          pResponse != NULL &&
-                          pResponse->pBuffer != NULL &&
+                          pResponse != NULL && pResponse->pBuffer != NULL &&
                           pResponse->bufferLen > 0 );
         pHttpParsingContext->pResponse = pResponse;
 
@@ -243,12 +253,15 @@ HTTPParsingContext_t * allocateHttpSendParsingContext( HTTPParsingContext_t * pH
     return pHttpParsingContext;
 }
 
-bool isValidHttpSendParsingContext( const HTTPParsingContext_t * pHttpParsingContext )
+bool isValidHttpSendParsingContext(
+    const HTTPParsingContext_t * pHttpParsingContext )
 {
     bool isValid = true;
 
-    isValid = isValid && ( pHttpParsingContext->lastHeaderFieldLen ) <= ( SIZE_MAX - CBMC_MAX_OBJECT_SIZE );
-    isValid = isValid && ( pHttpParsingContext->lastHeaderValueLen ) <= ( SIZE_MAX - CBMC_MAX_OBJECT_SIZE );
+    isValid = isValid && ( pHttpParsingContext->lastHeaderFieldLen ) <=
+                             ( SIZE_MAX - CBMC_MAX_OBJECT_SIZE );
+    isValid = isValid && ( pHttpParsingContext->lastHeaderValueLen ) <=
+                             ( SIZE_MAX - CBMC_MAX_OBJECT_SIZE );
 
     return isValid;
 }
@@ -269,7 +282,8 @@ llhttp_t * allocateHttpReadHeaderParser( llhttp_t * pHttpParser )
     return pHttpParser;
 }
 
-findHeaderContext_t * allocateFindHeaderContext( findHeaderContext_t * pFindHeaderContext )
+findHeaderContext_t * allocateFindHeaderContext(
+    findHeaderContext_t * pFindHeaderContext )
 {
     if( pFindHeaderContext == NULL )
     {

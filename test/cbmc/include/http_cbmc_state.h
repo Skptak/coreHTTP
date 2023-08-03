@@ -4,22 +4,23 @@
  *
  * SPDX-License-Identifier: MIT
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 /**
@@ -68,7 +69,8 @@ void * mallocCanFail( size_t size );
  *
  * @return NULL or pointer to allocated #HTTPRequestHeaders_t object.
  */
-HTTPRequestHeaders_t * allocateHttpRequestHeaders( HTTPRequestHeaders_t * pRequestHeaders );
+HTTPRequestHeaders_t * allocateHttpRequestHeaders(
+    HTTPRequestHeaders_t * pRequestHeaders );
 
 /**
  * @brief Validates if a #HTTPRequestHeaders_t object is feasible.
@@ -122,7 +124,8 @@ bool isValidHttpResponse( const HTTPResponse_t * pResponse );
  *
  * @return NULL or pointer to allocated #TransportInterface_t object.
  */
-TransportInterface_t * allocateTransportInterface( TransportInterface_t * pTransport );
+TransportInterface_t * allocateTransportInterface(
+    TransportInterface_t * pTransport );
 
 /**
  * @brief Validates if a #TransportInterface_t object is feasible.
@@ -150,7 +153,8 @@ llhttp_t * allocateHttpSendParser( llhttp_t * pHttpParser );
  *
  * @return NULL or pointer to allocated #HTTPParsingContext_t object.
  */
-HTTPParsingContext_t * allocateHttpSendParsingContext( HTTPParsingContext_t * pHttpParsingContext );
+HTTPParsingContext_t * allocateHttpSendParsingContext(
+    HTTPParsingContext_t * pHttpParsingContext );
 
 /**
  * @brief Validates if a #HTTPParsingContext_t object is feasible.
@@ -159,7 +163,8 @@ HTTPParsingContext_t * allocateHttpSendParsingContext( HTTPParsingContext_t * pH
  *
  * @return True if #pHttpParsingContext is feasible; false otherwise.
  */
-bool isValidHttpSendParsingContext( const HTTPParsingContext_t * pHttpParsingContext );
+bool isValidHttpSendParsingContext(
+    const HTTPParsingContext_t * pHttpParsingContext );
 
 /**
  * @brief Allocate an #llhttp_t object that is valid in the context of the
@@ -178,7 +183,7 @@ llhttp_t * allocateHttpReadHeaderParser( llhttp_t * pHttpParser );
  *
  * @return NULL or pointer to allocated #findHeaderContext_t object.
  */
-findHeaderContext_t * allocateFindHeaderContext( findHeaderContext_t * pFindHeaderContext );
-
+findHeaderContext_t * allocateFindHeaderContext(
+    findHeaderContext_t * pFindHeaderContext );
 
 #endif /* ifndef HTTP_CBMC_STATE_H_ */

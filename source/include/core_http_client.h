@@ -4,22 +4,23 @@
  *
  * SPDX-License-Identifier: MIT
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 /**
@@ -30,12 +31,12 @@
 #ifndef CORE_HTTP_CLIENT_H_
 #define CORE_HTTP_CLIENT_H_
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
-    extern "C" {
+extern "C" {
 #endif
 /* *INDENT-ON* */
 
@@ -59,10 +60,10 @@
 /** @addtogroup http_constants
  *  @{
  */
-#define HTTP_METHOD_GET     "GET"                       /**< HTTP Method GET string. */
-#define HTTP_METHOD_PUT     "PUT"                       /**< HTTP Method PUT string. */
-#define HTTP_METHOD_POST    "POST"                      /**< HTTP Method POST string. */
-#define HTTP_METHOD_HEAD    "HEAD"                      /**< HTTP Method HEAD string. */
+#define HTTP_METHOD_GET  "GET"  /**< HTTP Method GET string. */
+#define HTTP_METHOD_PUT  "PUT"  /**< HTTP Method PUT string. */
+#define HTTP_METHOD_POST "POST" /**< HTTP Method POST string. */
+#define HTTP_METHOD_HEAD "HEAD" /**< HTTP Method HEAD string. */
 /** @}*/
 
 /**
@@ -70,7 +71,8 @@
  * @brief The maximum Content-Length header field and value that could be
  * written to the request header buffer.
  */
-#define HTTP_MAX_CONTENT_LENGTH_HEADER_LENGTH    sizeof( "Content-Length: 4294967295" ) - 1U
+#define HTTP_MAX_CONTENT_LENGTH_HEADER_LENGTH \
+    sizeof( "Content-Length: 4294967295" ) - 1U
 
 /**
  * @defgroup http_send_flags HTTPClient_Send Flags
@@ -111,13 +113,13 @@
  *
  * This flag is valid only for #HTTPRequestInfo_t reqFlags parameter.
  */
-#define HTTP_REQUEST_KEEP_ALIVE_FLAG    0x1U
+#define HTTP_REQUEST_KEEP_ALIVE_FLAG             0x1U
 
 /**
  * @defgroup http_response_flags HTTPResponse_t Flags
  * @brief Flags for #HTTPResponse_t.respFlags.
- * These flags are populated in #HTTPResponse_t.respFlags by the #HTTPClient_Send
- * function.
+ * These flags are populated in #HTTPResponse_t.respFlags by the
+ * #HTTPClient_Send function.
  *
  * A flag's value can be extracted from #HTTPResponse_t.respFlags with a
  * bitwise-AND.
@@ -132,7 +134,7 @@
  *
  * This flag is valid only for #HTTPResponse_t.respFlags.
  */
-#define HTTP_RESPONSE_CONNECTION_CLOSE_FLAG         0x1U
+#define HTTP_RESPONSE_CONNECTION_CLOSE_FLAG      0x1U
 
 /**
  * @ingroup http_response_flags
@@ -140,7 +142,7 @@
  *
  * This flag is valid only for #HTTPResponse_t.respFlags.
  */
-#define HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG    0x2U
+#define HTTP_RESPONSE_CONNECTION_KEEP_ALIVE_FLAG 0x2U
 
 /**
  * @ingroup http_constants
@@ -154,7 +156,7 @@
  *  - When the requested range is for the last N bytes of the file.
  * In both cases, this value should be used for the "rangeEnd" parameter.
  */
-#define HTTP_RANGE_REQUEST_END_OF_FILE              -1
+#define HTTP_RANGE_REQUEST_END_OF_FILE           -1
 
 /**
  * @ingroup http_enum_types
@@ -358,7 +360,8 @@ typedef struct HTTPRequestInfo
     size_t methodLen; /**< The length of the method in bytes. */
 
     /**
-     * @brief The Request-URI to the objects of interest, e.g. "/path/to/item.txt".
+     * @brief The Request-URI to the objects of interest, e.g.
+     * "/path/to/item.txt".
      */
     const char * pPath;
     size_t pathLen; /**< The length of the path in bytes. */
@@ -379,8 +382,6 @@ typedef struct HTTPRequestInfo
     uint32_t reqFlags;
 } HTTPRequestInfo_t;
 
-
-
 /**
  * @ingroup http_struct_types
  * @brief Callback to intercept headers during the first parse through of the
@@ -389,20 +390,22 @@ typedef struct HTTPRequestInfo
 typedef struct HTTPClient_ResponseHeaderParsingCallback
 {
     /**
-     * @brief Invoked when both a header field and its associated header value are found.
+     * @brief Invoked when both a header field and its associated header value
+     * are found.
      * @param[in] pContext User context.
-     * @param[in] fieldLoc Location of the header field name in the response buffer.
+     * @param[in] fieldLoc Location of the header field name in the response
+     * buffer.
      * @param[in] fieldLen Length in bytes of the field name.
      * @param[in] valueLoc Location of the header value in the response buffer.
      * @param[in] valueLen Length in bytes of the value.
      * @param[in] statusCode The HTTP response status-code.
      */
-    void ( * onHeaderCallback )( void * pContext,
-                                 const char * fieldLoc,
-                                 size_t fieldLen,
-                                 const char * valueLoc,
-                                 size_t valueLen,
-                                 uint16_t statusCode );
+    void ( *onHeaderCallback )( void * pContext,
+                                const char * fieldLoc,
+                                size_t fieldLen,
+                                const char * valueLoc,
+                                size_t valueLen,
+                                uint16_t statusCode );
 
     /**
      * @brief Private context for the application.
@@ -417,7 +420,7 @@ typedef struct HTTPClient_ResponseHeaderParsingCallback
  *
  * @return The current time in milliseconds.
  */
-typedef uint32_t (* HTTPClient_GetCurrentTimeFunc_t )( void );
+typedef uint32_t ( *HTTPClient_GetCurrentTimeFunc_t )( void );
 
 /**
  * @ingroup http_struct_types
@@ -536,9 +539,9 @@ typedef struct HTTPResponse
  * of bytes written.
  *
  * Each line in the header is listed below and written in this order:
- *     <#HTTPRequestInfo_t.pMethod> <#HTTPRequestInfo_t.pPath> <#HTTP_PROTOCOL_VERSION>
- *     User-Agent: <#HTTP_USER_AGENT_VALUE>
- *     Host: <#HTTPRequestInfo_t.pHost>
+ *     <#HTTPRequestInfo_t.pMethod> <#HTTPRequestInfo_t.pPath>
+ * <#HTTP_PROTOCOL_VERSION> User-Agent: <#HTTP_USER_AGENT_VALUE> Host:
+ * <#HTTPRequestInfo_t.pHost>
  *
  * Note that "Connection" header can be added and set to "keep-alive" by
  * activating the HTTP_REQUEST_KEEP_ALIVE_FLAG in #HTTPRequestInfo_t.reqFlags.
@@ -547,8 +550,10 @@ typedef struct HTTPResponse
  * @param[in] pRequestInfo Initial request header configurations.
  * @return One of the following:
  * - #HTTPSuccess (If successful)
- * - #HTTPInvalidParameter (If any provided parameters or their members are invalid.)
- * - #HTTPInsufficientMemory (If provided buffer size is not large enough to hold headers.)
+ * - #HTTPInvalidParameter (If any provided parameters or their members are
+ * invalid.)
+ * - #HTTPInsufficientMemory (If provided buffer size is not large enough to
+ * hold headers.)
  *
  * **Example**
  * @code{c}
@@ -578,8 +583,9 @@ typedef struct HTTPResponse
  * @endcode
  */
 /* @[declare_httpclient_initializerequestheaders] */
-HTTPStatus_t HTTPClient_InitializeRequestHeaders( HTTPRequestHeaders_t * pRequestHeaders,
-                                                  const HTTPRequestInfo_t * pRequestInfo );
+HTTPStatus_t HTTPClient_InitializeRequestHeaders(
+    HTTPRequestHeaders_t * pRequestHeaders,
+    const HTTPRequestInfo_t * pRequestInfo );
 /* @[declare_httpclient_initializerequestheaders] */
 
 /**
@@ -613,9 +619,12 @@ HTTPStatus_t HTTPClient_InitializeRequestHeaders( HTTPRequestHeaders_t * pReques
  *
  * @return One of the following:
  * - #HTTPSuccess (If successful.)
- * - #HTTPInvalidParameter (If any provided parameters or their members are invalid.)
- * - #HTTPInsufficientMemory (If application-provided buffer is not large enough to hold headers.)
- * - #HTTPSecurityAlertInvalidCharacter (If an invalid character was found in @p pField or @p pValue.)
+ * - #HTTPInvalidParameter (If any provided parameters or their members are
+ * invalid.)
+ * - #HTTPInsufficientMemory (If application-provided buffer is not large enough
+ * to hold headers.)
+ * - #HTTPSecurityAlertInvalidCharacter (If an invalid character was found in @p
+ * pField or @p pValue.)
  *
  * **Example**
  * @code{c}
@@ -626,9 +635,8 @@ HTTPStatus_t HTTPClient_InitializeRequestHeaders( HTTPRequestHeaders_t * pReques
  *
  * httpLibraryStatus = HTTPClient_AddHeader( &requestHeaders,
  *                                           "Request-Header-Field",
- *                                           sizeof( "Request-Header-Field" ) - 1U,
- *                                           "Request-Header-Value",
- *                                           sizeof("Request-Header-Value") - 1U );
+ *                                           sizeof( "Request-Header-Field" ) -
+ * 1U, "Request-Header-Value", sizeof("Request-Header-Value") - 1U );
  * @endcode
  */
 /* @[declare_httpclient_addheader] */
@@ -652,9 +660,10 @@ HTTPStatus_t HTTPClient_AddHeader( HTTPRequestHeaders_t * pRequestHeaders,
  * There are 3 different forms of range specification, determined by the
  * combination of @a rangeStartOrLastNBytes and @a rangeEnd parameter values:
  *
- * 1. Request containing both parameters for the byte range [rangeStart, rangeEnd]
- *    where @a rangeStartOrLastNBytes <= @a rangeEnd.
- *    Example request header line: `Range: bytes=0-1023\r\n` for requesting bytes in the range [0, 1023].<br>
+ * 1. Request containing both parameters for the byte range [rangeStart,
+ * rangeEnd] where @a rangeStartOrLastNBytes <= @a rangeEnd. Example request
+ * header line: `Range: bytes=0-1023\r\n` for requesting bytes in the range [0,
+ * 1023].<br>
  *    **Example**
  *    @code{c}
  *    HTTPStatus_t httpLibraryStatus = HTTPSuccess;
@@ -669,8 +678,8 @@ HTTPStatus_t HTTPClient_AddHeader( HTTPRequestHeaders_t * pRequestHeaders,
  * 2. Request for the last N bytes, represented by @p rangeStartOrlastNbytes.
  *    @p rangeStartOrlastNbytes should be negative and @p rangeEnd should be
  *    #HTTP_RANGE_REQUEST_END_OF_FILE.
- *    Example request header line: `Range: bytes=-512\r\n` for requesting the last 512 bytes
- *    (or bytes in the range [512, 1023] for a 1KB sized file).<br>
+ *    Example request header line: `Range: bytes=-512\r\n` for requesting the
+ * last 512 bytes (or bytes in the range [512, 1023] for a 1KB sized file).<br>
  *    **Example**
  *    @code{c}
  *    HTTPStatus_t httpLibraryStatus = HTTPSuccess;
@@ -679,15 +688,17 @@ HTTPStatus_t HTTPClient_AddHeader( HTTPRequestHeaders_t * pRequestHeaders,
  *    HTTPRequestHeaders_t requestHeaders;
  *
  *    // Request for the last 512 bytes.
- *    httpLibraryStatus = HTTPClient_AddRangeHeader( &requestHeaders, -512, HTTP_RANGE_REQUEST_END_OF_FILE)
+ *    httpLibraryStatus = HTTPClient_AddRangeHeader( &requestHeaders, -512,
+ * HTTP_RANGE_REQUEST_END_OF_FILE)
  *    @endcode
  *
  * 3. Request for all bytes (till the end of byte sequence) from byte N,
  *    represented by @p rangeStartOrlastNbytes.
  *    @p rangeStartOrlastNbytes should be >= 0 and @p rangeEnd should be
  *    #HTTP_RANGE_REQUEST_END_OF_FILE.<br>
- *    Example request header line: `Range: bytes=256-\r\n` for requesting all bytes after and
- *    including byte 256 (or bytes in the range [256,1023] for a 1kB sized file).<br>
+ *    Example request header line: `Range: bytes=256-\r\n` for requesting all
+ * bytes after and including byte 256 (or bytes in the range [256,1023] for a
+ * 1kB sized file).<br>
  *    **Example**
  *    @code{c}
  *    HTTPStatus_t httpLibraryStatus = HTTPSuccess;
@@ -696,7 +707,8 @@ HTTPStatus_t HTTPClient_AddHeader( HTTPRequestHeaders_t * pRequestHeaders,
  *    HTTPRequestHeaders_t requestHeaders;
  *
  *    // Request for all bytes from byte 256 onward.
- *    httpLibraryStatus = HTTPClient_AddRangeHeader( &requestHeaders, 256, HTTP_RANGE_REQUEST_END_OF_FILE)
+ *    httpLibraryStatus = HTTPClient_AddRangeHeader( &requestHeaders, 256,
+ * HTTP_RANGE_REQUEST_END_OF_FILE)
  *    @endcode
  *
  * @param[in] pRequestHeaders Request header buffer information.
@@ -709,8 +721,8 @@ HTTPStatus_t HTTPClient_AddHeader( HTTPRequestHeaders_t * pRequestHeaders,
  * @return Returns the following status codes:
  * #HTTPSuccess, if successful.
  * #HTTPInvalidParameter, if input parameters are invalid, including when
- * the @p rangeStartOrlastNbytes and @p rangeEnd parameter combination is invalid.
- * #HTTPInsufficientMemory, if the passed #HTTPRequestHeaders_t.pBuffer
+ * the @p rangeStartOrlastNbytes and @p rangeEnd parameter combination is
+ * invalid. #HTTPInsufficientMemory, if the passed #HTTPRequestHeaders_t.pBuffer
  * contains insufficient remaining memory for storing the range request.
  */
 /* @[declare_httpclient_addrangeheader] */
@@ -724,8 +736,9 @@ HTTPStatus_t HTTPClient_AddRangeHeader( HTTPRequestHeaders_t * pRequestHeaders,
  * body in @p pRequestBodyBuf over the transport. The response is received in
  * #HTTPResponse_t.pBuffer.
  *
- * If #HTTP_SEND_DISABLE_CONTENT_LENGTH_FLAG is not set in parameter @p sendFlags,
- * then the Content-Length to be sent to the server is automatically written to
+ * If #HTTP_SEND_DISABLE_CONTENT_LENGTH_FLAG is not set in parameter @p
+ * sendFlags, then the Content-Length to be sent to the server is automatically
+ * written to
  * @p pRequestHeaders. The Content-Length will not be written when there is
  * no request body. If there is not enough room in the buffer to write the
  * Content-Length then #HTTPInsufficientMemory is returned. Please see
@@ -757,14 +770,18 @@ HTTPStatus_t HTTPClient_AddRangeHeader( HTTPRequestHeaders_t * pRequestHeaders,
  *
  * @return One of the following:
  * - #HTTPSuccess (If successful.)
- * - #HTTPInvalidParameter (If any provided parameters or their members are invalid.)
- * - #HTTPNetworkError (Errors in sending or receiving over the transport interface.)
- * - #HTTPPartialResponse (Part of an HTTP response was received in a partially filled response buffer.)
+ * - #HTTPInvalidParameter (If any provided parameters or their members are
+ * invalid.)
+ * - #HTTPNetworkError (Errors in sending or receiving over the transport
+ * interface.)
+ * - #HTTPPartialResponse (Part of an HTTP response was received in a partially
+ * filled response buffer.)
  * - #HTTPNoResponse (No data was received from the transport interface.)
- * - #HTTPInsufficientMemory (The response received could not fit into the response buffer
- * or extra headers could not be sent in the request.)
+ * - #HTTPInsufficientMemory (The response received could not fit into the
+ * response buffer or extra headers could not be sent in the request.)
  * - #HTTPParserInternalError (Internal parsing error.)\n\n
- * Security alerts are listed below, please see #HTTPStatus_t for more information:
+ * Security alerts are listed below, please see #HTTPStatus_t for more
+ * information:
  * - #HTTPSecurityAlertExtraneousResponseData
  * - #HTTPSecurityAlertInvalidChunkHeader
  * - #HTTPSecurityAlertInvalidProtocolVersion
@@ -846,9 +863,11 @@ HTTPStatus_t HTTPClient_Send( const TransportInterface_t * pTransport,
  *
  * @return One of the following:
  * - #HTTPSuccess (If successful.)
- * - #HTTPInvalidParameter (If any provided parameters or their members are invalid.)
+ * - #HTTPInvalidParameter (If any provided parameters or their members are
+ * invalid.)
  * - #HTTPHeaderNotFound (Header is not found in the passed response buffer.)
- * - #HTTPInvalidResponse (Provided response is not a valid HTTP response for parsing.)
+ * - #HTTPInvalidResponse (Provided response is not a valid HTTP response for
+ * parsing.)
  * - #HTTPParserInternalError(If an error in the response parser.)
  *
  * **Example**
@@ -892,7 +911,7 @@ const char * HTTPClient_strerror( HTTPStatus_t status );
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
-    }
+}
 #endif
 /* *INDENT-ON* */
 

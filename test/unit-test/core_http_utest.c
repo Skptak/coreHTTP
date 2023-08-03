@@ -4,22 +4,23 @@
  *
  * SPDX-License-Identifier: MIT
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 #include <string.h>
@@ -36,17 +37,18 @@
 #include "mock_llhttp.h"
 
 /* Default size for request buffer. */
-#define HTTP_TEST_BUFFER_SIZE           ( 100 )
+#define HTTP_TEST_BUFFER_SIZE ( 100 )
 
 /* Headers data with "\r\n\r\n" terminator to be pre-populated in buffer before
  * call to AddRangeHeader(). */
-#define PREEXISTING_HEADER_DATA         "POST / HTTP/1.1 \r\nAuthorization: None\r\n\r\n"
-#define PREEXISTING_HEADER_DATA_LEN     ( sizeof( PREEXISTING_HEADER_DATA ) - 1 )
+#define PREEXISTING_HEADER_DATA \
+    "POST / HTTP/1.1 \r\nAuthorization: None\r\n\r\n"
+#define PREEXISTING_HEADER_DATA_LEN  ( sizeof( PREEXISTING_HEADER_DATA ) - 1 )
 
-/* Headers data without "\r\n\r\n" terminator to be pre-populated in buffer before
- * call to AddRangeHeader(). */
-#define PREEXISTING_REQUEST_LINE        "POST / HTTP/1.1 \r\n"
-#define PREEXISTING_REQUEST_LINE_LEN    ( sizeof( PREEXISTING_REQUEST_LINE ) - 1 )
+/* Headers data without "\r\n\r\n" terminator to be pre-populated in buffer
+ * before call to AddRangeHeader(). */
+#define PREEXISTING_REQUEST_LINE     "POST / HTTP/1.1 \r\n"
+#define PREEXISTING_REQUEST_LINE_LEN ( sizeof( PREEXISTING_REQUEST_LINE ) - 1 )
 
 /* Type to store expected headers data. */
 typedef struct _headers
@@ -55,16 +57,15 @@ typedef struct _headers
     size_t dataLen;
 } _headers_t;
 
-#define HTTP_METHOD_GET_LEN           ( sizeof( HTTP_METHOD_GET ) - 1 )
-#define HTTP_TEST_REQUEST_PATH        "/robots.txt"
-#define HTTP_TEST_REQUEST_PATH_LEN    ( sizeof( HTTP_TEST_REQUEST_PATH ) - 1 )
-#define HTTP_TEST_HOST_VALUE          "amazon.com"
-#define HTTP_TEST_HOST_VALUE_LEN      ( sizeof( HTTP_TEST_HOST_VALUE ) - 1 )
-#define HTTP_TEST_REQUEST_LINE   \
-    ( HTTP_METHOD_GET " "        \
-      HTTP_TEST_REQUEST_PATH " " \
-      HTTP_PROTOCOL_VERSION "\r\n" )
-#define HTTP_TEST_REQUEST_LINE_LEN    ( sizeof( HTTP_TEST_REQUEST_LINE ) - 1 )
+#define HTTP_METHOD_GET_LEN        ( sizeof( HTTP_METHOD_GET ) - 1 )
+#define HTTP_TEST_REQUEST_PATH     "/robots.txt"
+#define HTTP_TEST_REQUEST_PATH_LEN ( sizeof( HTTP_TEST_REQUEST_PATH ) - 1 )
+#define HTTP_TEST_HOST_VALUE       "amazon.com"
+#define HTTP_TEST_HOST_VALUE_LEN   ( sizeof( HTTP_TEST_HOST_VALUE ) - 1 )
+#define HTTP_TEST_REQUEST_LINE                                             \
+    ( HTTP_METHOD_GET " " HTTP_TEST_REQUEST_PATH " " HTTP_PROTOCOL_VERSION \
+                      "\r\n" )
+#define HTTP_TEST_REQUEST_LINE_LEN ( sizeof( HTTP_TEST_REQUEST_LINE ) - 1 )
 
 /* Used for format parameter in snprintf(...). */
 #define HTTP_TEST_HEADER_FORMAT \
@@ -84,56 +85,53 @@ typedef struct _headers
  *   <HTTP_HOST_FIELD>: <HTTP_TEST_HOST_VALUE> \r\n
  *   \r\n
  * This is used to initialize the expectedHeader string. */
-#define HTTP_TEST_PREFIX_HEADER_LEN                                 \
-    ( HTTP_METHOD_GET_LEN + SPACE_CHARACTER_LEN +                   \
-      HTTP_TEST_REQUEST_PATH_LEN + SPACE_CHARACTER_LEN +            \
-      HTTP_PROTOCOL_VERSION_LEN + HTTP_HEADER_LINE_SEPARATOR_LEN +  \
-      HTTP_USER_AGENT_FIELD_LEN + HTTP_HEADER_FIELD_SEPARATOR_LEN + \
-      HTTP_USER_AGENT_VALUE_LEN + HTTP_HEADER_LINE_SEPARATOR_LEN +  \
-      HTTP_HOST_FIELD_LEN + HTTP_HEADER_FIELD_SEPARATOR_LEN +       \
-      HTTP_TEST_HOST_VALUE_LEN + HTTP_HEADER_LINE_SEPARATOR_LEN +   \
-      HTTP_HEADER_LINE_SEPARATOR_LEN )
+#define HTTP_TEST_PREFIX_HEADER_LEN                                            \
+    ( HTTP_METHOD_GET_LEN + SPACE_CHARACTER_LEN + HTTP_TEST_REQUEST_PATH_LEN + \
+      SPACE_CHARACTER_LEN + HTTP_PROTOCOL_VERSION_LEN +                        \
+      HTTP_HEADER_LINE_SEPARATOR_LEN + HTTP_USER_AGENT_FIELD_LEN +             \
+      HTTP_HEADER_FIELD_SEPARATOR_LEN + HTTP_USER_AGENT_VALUE_LEN +            \
+      HTTP_HEADER_LINE_SEPARATOR_LEN + HTTP_HOST_FIELD_LEN +                   \
+      HTTP_HEADER_FIELD_SEPARATOR_LEN + HTTP_TEST_HOST_VALUE_LEN +             \
+      HTTP_HEADER_LINE_SEPARATOR_LEN + HTTP_HEADER_LINE_SEPARATOR_LEN )
 
 /* Add 1 because snprintf(...) writes a null byte at the end. */
 #define HTTP_TEST_INITIALIZED_HEADER_BUFFER_LEN \
     ( HTTP_TEST_PREFIX_HEADER_LEN + 1 )
 
 /* Template HTTP header fields and values. */
-#define HTTP_TEST_HEADER_FIELD               "Authorization"
-#define HTTP_TEST_HEADER_FIELD_LEN           ( sizeof( HTTP_TEST_HEADER_FIELD ) - 1 )
-#define HTTP_TEST_HEADER_VALUE               "None"
-#define HTTP_TEST_HEADER_VALUE_LEN           ( sizeof( HTTP_TEST_HEADER_VALUE ) - 1 )
+#define HTTP_TEST_HEADER_FIELD        "Authorization"
+#define HTTP_TEST_HEADER_FIELD_LEN    ( sizeof( HTTP_TEST_HEADER_FIELD ) - 1 )
+#define HTTP_TEST_HEADER_VALUE        "None"
+#define HTTP_TEST_HEADER_VALUE_LEN    ( sizeof( HTTP_TEST_HEADER_VALUE ) - 1 )
 /* Template for first line of HTTP header. */
-#define HTTP_TEST_HEADER_REQUEST_LINE        "GET / HTTP/1.1 \r\n"
-#define HTTP_TEST_HEADER_REQUEST_LINE_LEN    ( sizeof( HTTP_TEST_HEADER_REQUEST_LINE ) - 1 )
-#define HTTP_REQUEST_HEADERS_INITIALIZER     { 0 }
+#define HTTP_TEST_HEADER_REQUEST_LINE "GET / HTTP/1.1 \r\n"
+#define HTTP_TEST_HEADER_REQUEST_LINE_LEN \
+    ( sizeof( HTTP_TEST_HEADER_REQUEST_LINE ) - 1 )
+#define HTTP_REQUEST_HEADERS_INITIALIZER \
+    {                                    \
+        0                                \
+    }
 /* Template for snprintf(...) strings. */
-#define HTTP_TEST_SINGLE_HEADER_FORMAT       "%s%s: %s\r\n\r\n"
-#define HTTP_TEST_DOUBLE_HEADER_FORMAT       "%s%s: %s\r\n%s: %s\r\n\r\n"
+#define HTTP_TEST_SINGLE_HEADER_FORMAT "%s%s: %s\r\n\r\n"
+#define HTTP_TEST_DOUBLE_HEADER_FORMAT "%s%s: %s\r\n%s: %s\r\n\r\n"
 
 /* Length of the following template HTTP header.
  *   <HTTP_TEST_HEADER_REQUEST_LINE> \r\n
  *   <HTTP_TEST_HEADER_FIELD>: <HTTP_TEST_HEADER_VALUE> \r\n
  *   \r\n
  * This is used to initialize the expectedHeader string. */
-#define HTTP_TEST_SINGLE_HEADER_LEN       \
-    ( HTTP_TEST_HEADER_REQUEST_LINE_LEN + \
-      HTTP_TEST_HEADER_FIELD_LEN +        \
-      HTTP_HEADER_FIELD_SEPARATOR_LEN +   \
-      HTTP_TEST_HEADER_VALUE_LEN +        \
-      HTTP_HEADER_LINE_SEPARATOR_LEN +    \
-      HTTP_HEADER_LINE_SEPARATOR_LEN )
+#define HTTP_TEST_SINGLE_HEADER_LEN                                    \
+    ( HTTP_TEST_HEADER_REQUEST_LINE_LEN + HTTP_TEST_HEADER_FIELD_LEN + \
+      HTTP_HEADER_FIELD_SEPARATOR_LEN + HTTP_TEST_HEADER_VALUE_LEN +   \
+      HTTP_HEADER_LINE_SEPARATOR_LEN + HTTP_HEADER_LINE_SEPARATOR_LEN )
 
 /* The longest possible header used for these unit tests. */
-#define HTTP_TEST_DOUBLE_HEADER_LEN     \
-    ( HTTP_TEST_SINGLE_HEADER_LEN +     \
-      HTTP_TEST_HEADER_FIELD_LEN +      \
-      HTTP_HEADER_FIELD_SEPARATOR_LEN + \
-      HTTP_TEST_HEADER_VALUE_LEN +      \
+#define HTTP_TEST_DOUBLE_HEADER_LEN                                  \
+    ( HTTP_TEST_SINGLE_HEADER_LEN + HTTP_TEST_HEADER_FIELD_LEN +     \
+      HTTP_HEADER_FIELD_SEPARATOR_LEN + HTTP_TEST_HEADER_VALUE_LEN + \
       HTTP_HEADER_LINE_SEPARATOR_LEN )
 
-#define HTTP_TEST_DOUBLE_HEADER_BUFFER_LEN \
-    ( HTTP_TEST_DOUBLE_HEADER_LEN + 1 )
+#define HTTP_TEST_DOUBLE_HEADER_BUFFER_LEN ( HTTP_TEST_DOUBLE_HEADER_LEN + 1 )
 
 /* Template HTTP response for testing HTTPClient_ReadHeader API. */
 static const char * pTestResponse = "HTTP/1.1 200 OK\r\n"
@@ -153,24 +151,26 @@ static const char * pTestResponseEmptyValue = "HTTP/1.1 200 OK\r\n"
 
 /* Template HTTP response for testing HTTPClient_ReadHeader API
  * with special characters. */
-static const char * pTestResponseSpecialCharacter = "HTTP/1.1 200 OK\r\n"
-                                                    "test-header0: test-value0\r\n"
-                                                    "test-header1: test-value1\r\n"
-                                                    "test-header2: test|value2\r\n"
-                                                    "header{_not_in|buff}: test-value3\r\n"
-                                                    "\r\n";
+static const char *
+    pTestResponseSpecialCharacter = "HTTP/1.1 200 OK\r\n"
+                                    "test-header0: test-value0\r\n"
+                                    "test-header1: test-value1\r\n"
+                                    "test-header2: test|value2\r\n"
+                                    "header{_not_in|buff}: test-value3\r\n"
+                                    "\r\n";
 
-#define HEADER_INVALID_PARAMS                 "Header"
-#define HEADER_INVALID_PARAMS_LEN             ( sizeof( HEADER_INVALID_PARAMS ) - 1 )
+#define HEADER_INVALID_PARAMS          "Header"
+#define HEADER_INVALID_PARAMS_LEN      ( sizeof( HEADER_INVALID_PARAMS ) - 1 )
 
-#define HEADER_IN_BUFFER                      "teSt-hEader1"
-#define HEADER_IN_BUFFER_LEN                  ( sizeof( HEADER_IN_BUFFER ) - 1 )
+#define HEADER_IN_BUFFER               "teSt-hEader1"
+#define HEADER_IN_BUFFER_LEN           ( sizeof( HEADER_IN_BUFFER ) - 1 )
 
-#define HEADER_NOT_IN_BUFFER                  "header-not-in-buffer"
-#define HEADER_NOT_IN_BUFFER_LEN              ( sizeof( HEADER_NOT_IN_BUFFER ) - 1 )
+#define HEADER_NOT_IN_BUFFER           "header-not-in-buffer"
+#define HEADER_NOT_IN_BUFFER_LEN       ( sizeof( HEADER_NOT_IN_BUFFER ) - 1 )
 
-#define HEADER_WITH_SPECIAL_CHARACTERS        "header{_not-in|buff}"
-#define HEADER_WITH_SPECIAL_CHARACTERS_LEN    ( sizeof( HEADER_WITH_SPECIAL_CHARACTERS ) - 1 )
+#define HEADER_WITH_SPECIAL_CHARACTERS "header{_not-in|buff}"
+#define HEADER_WITH_SPECIAL_CHARACTERS_LEN \
+    ( sizeof( HEADER_WITH_SPECIAL_CHARACTERS ) - 1 )
 
 /* File-scoped Global variables */
 static HTTPStatus_t retCode = HTTPSuccess;
@@ -185,7 +185,9 @@ static HTTPResponse_t testResponse = { 0 };
 static const size_t headerFieldInRespLoc = 44;
 static const size_t headerFieldInRespLen = sizeof( "test-header1" ) - 1U;
 static const size_t otherHeaderFieldInRespLoc = 98;
-static const size_t otherHeaderFieldInRespLen = sizeof( "header_not_in_buffer" ) - 1U;
+static const size_t otherHeaderFieldInRespLen = sizeof(
+                                                    "header_not_in_buffer" ) -
+                                                1U;
 static const size_t headerValInRespLoc = 58;
 static const size_t headerValInRespLen = sizeof( "test-value1" ) - 1U;
 static llhttp_t * pCapturedParser = NULL;
@@ -202,12 +204,13 @@ static int expectedValCbRetVal = 0;
 static uint8_t invokeHeaderCompleteCallback = 0U;
 static unsigned int parserErrNo = 0;
 
-/* ============================ Helper Functions ============================== */
+/* ============================ Helper Functions ==============================
+ */
 
 /**
  * @brief Callback that is passed to the mock of llhttp_init function
- * to set test expectations on input arguments sent by the HTTP API function under
- * test.
+ * to set test expectations on input arguments sent by the HTTP API function
+ * under test.
  */
 void parserInitExpectationCb( llhttp_t * parser,
                               enum llhttp_type type,
@@ -228,8 +231,8 @@ void parserInitExpectationCb( llhttp_t * parser,
 
 /**
  * @brief Callback that is passed to the mock of llhttp_settings_init function
- * to set test expectations on input arguments sent by the HTTP API function under
- * test.
+ * to set test expectations on input arguments sent by the HTTP API function
+ * under test.
  */
 void parserSettingsInitExpectationCb( llhttp_settings_t * settings,
                                       int cmock_num_calls )
@@ -265,23 +268,26 @@ llhttp_errno_t parserExecuteExpectationsCb( llhttp_t * parser,
     if( invokeHeaderFieldCallback == 1U )
     {
         TEST_ASSERT_EQUAL( LLHTTP_CONTINUE_PARSING,
-                           ( ( llhttp_settings_t * ) ( parser->settings ) )->on_header_field( parser,
-                                                                                              pFieldLocToReturn,
-                                                                                              fieldLenToReturn ) );
+                           ( ( llhttp_settings_t * ) ( parser->settings ) )
+                               ->on_header_field( parser,
+                                                  pFieldLocToReturn,
+                                                  fieldLenToReturn ) );
     }
 
     if( invokeHeaderValueCallback == 1U )
     {
         TEST_ASSERT_EQUAL( expectedValCbRetVal,
-                           ( ( llhttp_settings_t * ) ( parser->settings ) )->on_header_value( parser,
-                                                                                              pValueLocToReturn,
-                                                                                              valueLenToReturn ) );
+                           ( ( llhttp_settings_t * ) ( parser->settings ) )
+                               ->on_header_value( parser,
+                                                  pValueLocToReturn,
+                                                  valueLenToReturn ) );
     }
 
     if( invokeHeaderCompleteCallback == 1U )
     {
         TEST_ASSERT_EQUAL( LLHTTP_STOP_PARSING_NO_HEADER,
-                           ( ( llhttp_settings_t * ) ( parser->settings ) )->on_headers_complete( parser ) );
+                           ( ( llhttp_settings_t * ) ( parser->settings ) )
+                               ->on_headers_complete( parser ) );
     }
 
     /* Set the error value in the parser. */
@@ -290,14 +296,15 @@ llhttp_errno_t parserExecuteExpectationsCb( llhttp_t * parser,
 }
 
 /**
- * @brief Fills the test input buffer and expectation buffers with pre-existing data
- * before calling the API function under test.
+ * @brief Fills the test input buffer and expectation buffers with pre-existing
+ * data before calling the API function under test.
  */
-static void setupBuffersWithPreexistingHeader( HTTPRequestHeaders_t * testRequestHeaders,
-                                               uint8_t * testBuffer,
-                                               size_t bufferSize,
-                                               _headers_t * expectedHeaders,
-                                               const char * preexistingData )
+static void setupBuffersWithPreexistingHeader(
+    HTTPRequestHeaders_t * testRequestHeaders,
+    uint8_t * testBuffer,
+    size_t bufferSize,
+    _headers_t * expectedHeaders,
+    const char * preexistingData )
 {
     size_t dataLen = strlen( preexistingData );
     int numBytes = 0;
@@ -316,14 +323,15 @@ static void setupBuffersWithPreexistingHeader( HTTPRequestHeaders_t * testReques
 
     /* Fill the same data in the expected buffer as HTTPClient_AddRangeHeaders()
      * is not expected to change it. */
-    memcpy( expectedHeaders->buffer, testRequestHeaders->pBuffer,
+    memcpy( expectedHeaders->buffer,
+            testRequestHeaders->pBuffer,
             testRequestHeaders->headersLen );
     expectedHeaders->dataLen = testRequestHeaders->headersLen;
 }
 
 /**
- * @brief Common utility for adding the expected range string for a AddRangeRequest test case
- * in the expectation buffer.
+ * @brief Common utility for adding the expected range string for a
+ * AddRangeRequest test case in the expectation buffer.
  */
 static void addRangeToExpectedHeaders( _headers_t * expectedHeaders,
                                        const char * expectedRange,
@@ -335,23 +343,25 @@ static void addRangeToExpectedHeaders( _headers_t * expectedHeaders,
                               strlen( expectedRange ) +
                               2 * HTTP_HEADER_LINE_SEPARATOR_LEN;
 
-    int numBytes =
-        snprintf( ( char * ) expectedHeaders->buffer +
-                  expectedHeaders->dataLen -
-                  ( terminatorExists ? HTTP_HEADER_LINE_SEPARATOR_LEN : 0 ),
-                  sizeof( expectedHeaders->buffer ) - expectedHeaders->dataLen,
-                  "%s%s%s%s\r\n\r\n",
-                  HTTP_RANGE_REQUEST_HEADER_FIELD,
-                  HTTP_HEADER_FIELD_SEPARATOR,
-                  HTTP_RANGE_REQUEST_HEADER_VALUE_PREFIX,
-                  expectedRange );
+    int numBytes = snprintf(
+        ( char * ) expectedHeaders->buffer + expectedHeaders->dataLen -
+            ( terminatorExists ? HTTP_HEADER_LINE_SEPARATOR_LEN : 0 ),
+        sizeof( expectedHeaders->buffer ) - expectedHeaders->dataLen,
+        "%s%s%s%s\r\n\r\n",
+        HTTP_RANGE_REQUEST_HEADER_FIELD,
+        HTTP_HEADER_FIELD_SEPARATOR,
+        HTTP_RANGE_REQUEST_HEADER_VALUE_PREFIX,
+        expectedRange );
 
     /* Make sure that the Range request was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
-    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders->buffer ), ( size_t ) numBytes );
+    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders->buffer ),
+                           ( size_t ) numBytes );
 
     expectedHeaders->dataLen += expectedRangeLen -
-                                ( terminatorExists ? HTTP_HEADER_LINE_SEPARATOR_LEN : 0 );
+                                ( terminatorExists
+                                      ? HTTP_HEADER_LINE_SEPARATOR_LEN
+                                      : 0 );
 }
 
 /* ============================ UNITY FIXTURES ============================== */
@@ -379,9 +389,7 @@ void tearDown()
     memset( &testHeaders, 0, sizeof( testHeaders ) );
     memset( testBuffer, 0, sizeof( testBuffer ) );
     memset( &expectedHeaders, 0, sizeof( expectedHeaders ) );
-    memset( &testResponse,
-            0,
-            sizeof( testResponse ) );
+    memset( &testResponse, 0, sizeof( testResponse ) );
     testResponse.pBuffer = testBuffer;
     testResponse.bufferLen = strlen( pTestResponse );
     pValueLoc = NULL;
@@ -455,25 +463,33 @@ void test_Http_InitializeRequestHeaders_Happy_Path()
     setupBuffer( &requestHeaders );
 
     /* Happy Path testing. */
-    numBytes = snprintf( ( char * ) expectedHeaders.buffer, sizeof( expectedHeaders.buffer ),
+    numBytes = snprintf( ( char * ) expectedHeaders.buffer,
+                         sizeof( expectedHeaders.buffer ),
                          HTTP_TEST_HEADER_FORMAT,
-                         HTTP_METHOD_GET, HTTP_TEST_REQUEST_PATH,
+                         HTTP_METHOD_GET,
+                         HTTP_TEST_REQUEST_PATH,
                          HTTP_PROTOCOL_VERSION,
-                         HTTP_USER_AGENT_FIELD, HTTP_USER_AGENT_VALUE,
-                         HTTP_HOST_FIELD, HTTP_TEST_HOST_VALUE );
+                         HTTP_USER_AGENT_FIELD,
+                         HTTP_USER_AGENT_VALUE,
+                         HTTP_HOST_FIELD,
+                         HTTP_TEST_HOST_VALUE );
     /* Make sure that the entire pre-existing data was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
-    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ), ( size_t ) numBytes );
+    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ),
+                           ( size_t ) numBytes );
 
-    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders, &requestInfo );
+    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders,
+                                                      &requestInfo );
     TEST_ASSERT_EQUAL( HTTPSuccess, httpStatus );
     TEST_ASSERT_EQUAL( expectedHeaders.dataLen, requestHeaders.headersLen );
-    TEST_ASSERT_EQUAL_MEMORY( expectedHeaders.buffer, requestHeaders.pBuffer,
+    TEST_ASSERT_EQUAL_MEMORY( expectedHeaders.buffer,
+                              requestHeaders.pBuffer,
                               expectedHeaders.dataLen );
 }
 
 /**
- * @brief Test NULL parameters, following order of else-if blocks in the HTTP library.
+ * @brief Test NULL parameters, following order of else-if blocks in the HTTP
+ * library.
  */
 void test_Http_InitializeRequestHeaders_Invalid_Params()
 {
@@ -486,7 +502,8 @@ void test_Http_InitializeRequestHeaders_Invalid_Params()
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 
     /* TEST requestInfo.pBuffer == NULL */
-    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders, &requestInfo );
+    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders,
+                                                      &requestInfo );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
     requestHeaders.pBuffer = testBuffer;
     requestHeaders.bufferLen = HTTP_TEST_INITIALIZED_HEADER_BUFFER_LEN;
@@ -496,29 +513,33 @@ void test_Http_InitializeRequestHeaders_Invalid_Params()
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 
     /* Test requestInfo.pMethod == NULL. */
-    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders, &requestInfo );
+    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders,
+                                                      &requestInfo );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
     requestInfo.pMethod = HTTP_METHOD_GET;
 
     /* Test requestInfo.pHost == NULL. */
-    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders, &requestInfo );
+    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders,
+                                                      &requestInfo );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 
     /* Test requestInfo.methodLen == 0. */
     requestInfo.pHost = HTTP_TEST_HOST_VALUE;
-    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders, &requestInfo );
+    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders,
+                                                      &requestInfo );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 
     /* Test requestInfo.hostLen == 0. */
     requestInfo.methodLen = HTTP_METHOD_GET_LEN;
-    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders, &requestInfo );
+    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders,
+                                                      &requestInfo );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 }
 
 /**
- * @brief Test default path "/" if path == NULL. Also, check that the "Connection"
- * header is set to "keep-alive" when HTTP_REQUEST_KEEP_ALIVE_FLAG in requestHeaders
- * is activated.
+ * @brief Test default path "/" if path == NULL. Also, check that the
+ * "Connection" header is set to "keep-alive" when HTTP_REQUEST_KEEP_ALIVE_FLAG
+ * in requestHeaders is activated.
  */
 void test_Http_InitializeRequestHeaders_ReqInfo()
 {
@@ -532,8 +553,7 @@ void test_Http_InitializeRequestHeaders_ReqInfo()
                                           HTTP_HEADER_LINE_SEPARATOR_LEN;
 
     expectedHeaders.dataLen = HTTP_TEST_PREFIX_HEADER_LEN -
-                              HTTP_TEST_REQUEST_PATH_LEN +
-                              HTTP_EMPTY_PATH_LEN +
+                              HTTP_TEST_REQUEST_PATH_LEN + HTTP_EMPTY_PATH_LEN +
                               connectionKeepAliveHeaderLen;
 
     setupRequestInfo( &requestInfo );
@@ -541,52 +561,68 @@ void test_Http_InitializeRequestHeaders_ReqInfo()
 
     requestInfo.pPath = NULL;
     requestInfo.reqFlags = HTTP_REQUEST_KEEP_ALIVE_FLAG;
-    numBytes = snprintf( ( char * ) expectedHeaders.buffer, sizeof( expectedHeaders.buffer ),
+    numBytes = snprintf( ( char * ) expectedHeaders.buffer,
+                         sizeof( expectedHeaders.buffer ),
                          HTTP_TEST_EXTRA_HEADER_FORMAT,
-                         HTTP_METHOD_GET, HTTP_EMPTY_PATH,
+                         HTTP_METHOD_GET,
+                         HTTP_EMPTY_PATH,
                          HTTP_PROTOCOL_VERSION,
-                         HTTP_USER_AGENT_FIELD, HTTP_USER_AGENT_VALUE,
-                         HTTP_HOST_FIELD, HTTP_TEST_HOST_VALUE,
-                         HTTP_CONNECTION_FIELD, HTTP_CONNECTION_KEEP_ALIVE_VALUE );
+                         HTTP_USER_AGENT_FIELD,
+                         HTTP_USER_AGENT_VALUE,
+                         HTTP_HOST_FIELD,
+                         HTTP_TEST_HOST_VALUE,
+                         HTTP_CONNECTION_FIELD,
+                         HTTP_CONNECTION_KEEP_ALIVE_VALUE );
     /* Make sure that the entire pre-existing data was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
-    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ), ( size_t ) numBytes );
+    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ),
+                           ( size_t ) numBytes );
 
     requestHeaders.pBuffer = testBuffer;
     requestHeaders.bufferLen = expectedHeaders.dataLen;
-    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders, &requestInfo );
+    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders,
+                                                      &requestInfo );
     TEST_ASSERT_EQUAL( HTTPSuccess, httpStatus );
     TEST_ASSERT_EQUAL( expectedHeaders.dataLen, requestHeaders.headersLen );
-    TEST_ASSERT_EQUAL_MEMORY( expectedHeaders.buffer, requestHeaders.pBuffer,
+    TEST_ASSERT_EQUAL_MEMORY( expectedHeaders.buffer,
+                              requestHeaders.pBuffer,
                               expectedHeaders.dataLen );
 
     /* Repeat the test above but with length of path == 0 for coverage. */
     requestInfo.pPath = HTTP_EMPTY_PATH;
     requestInfo.pathLen = 0;
     requestInfo.reqFlags = HTTP_REQUEST_KEEP_ALIVE_FLAG;
-    numBytes = snprintf( ( char * ) expectedHeaders.buffer, sizeof( expectedHeaders.buffer ),
+    numBytes = snprintf( ( char * ) expectedHeaders.buffer,
+                         sizeof( expectedHeaders.buffer ),
                          HTTP_TEST_EXTRA_HEADER_FORMAT,
-                         HTTP_METHOD_GET, HTTP_EMPTY_PATH,
+                         HTTP_METHOD_GET,
+                         HTTP_EMPTY_PATH,
                          HTTP_PROTOCOL_VERSION,
-                         HTTP_USER_AGENT_FIELD, HTTP_USER_AGENT_VALUE,
-                         HTTP_HOST_FIELD, HTTP_TEST_HOST_VALUE,
-                         HTTP_CONNECTION_FIELD, HTTP_CONNECTION_KEEP_ALIVE_VALUE );
+                         HTTP_USER_AGENT_FIELD,
+                         HTTP_USER_AGENT_VALUE,
+                         HTTP_HOST_FIELD,
+                         HTTP_TEST_HOST_VALUE,
+                         HTTP_CONNECTION_FIELD,
+                         HTTP_CONNECTION_KEEP_ALIVE_VALUE );
     /* Make sure that the entire pre-existing data was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
-    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ), ( size_t ) numBytes );
+    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ),
+                           ( size_t ) numBytes );
 
     requestHeaders.pBuffer = testBuffer;
     requestHeaders.bufferLen = expectedHeaders.dataLen;
-    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders, &requestInfo );
+    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders,
+                                                      &requestInfo );
     TEST_ASSERT_EQUAL( HTTPSuccess, httpStatus );
     TEST_ASSERT_EQUAL( expectedHeaders.dataLen, requestHeaders.headersLen );
-    TEST_ASSERT_EQUAL_MEMORY( expectedHeaders.buffer, requestHeaders.pBuffer,
+    TEST_ASSERT_EQUAL_MEMORY( expectedHeaders.buffer,
+                              requestHeaders.pBuffer,
                               expectedHeaders.dataLen );
 }
 
 /**
- * @brief Test HTTPInsufficientMemory from having requestHeaders.bufferLen less than
- * what is required to fit HTTP_TEST_REQUEST_LINE.
+ * @brief Test HTTPInsufficientMemory from having requestHeaders.bufferLen less
+ * than what is required to fit HTTP_TEST_REQUEST_LINE.
  */
 void test_Http_InitializeRequestHeaders_Insufficient_Memory()
 {
@@ -601,7 +637,8 @@ void test_Http_InitializeRequestHeaders_Insufficient_Memory()
 
     requestHeaders.bufferLen = HTTP_TEST_REQUEST_LINE_LEN - 1;
 
-    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders, &requestInfo );
+    httpStatus = HTTPClient_InitializeRequestHeaders( &requestHeaders,
+                                                      &requestInfo );
     TEST_ASSERT_EQUAL( HTTPInsufficientMemory, httpStatus );
     TEST_ASSERT_TRUE( strncmp( ( char * ) requestHeaders.pBuffer,
                                HTTP_TEST_REQUEST_LINE,
@@ -627,10 +664,12 @@ void test_Http_AddHeader_Happy_Path()
                          sizeof( expectedHeaders.buffer ),
                          HTTP_TEST_SINGLE_HEADER_FORMAT,
                          HTTP_TEST_HEADER_REQUEST_LINE,
-                         HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_VALUE );
+                         HTTP_TEST_HEADER_FIELD,
+                         HTTP_TEST_HEADER_VALUE );
     /* Make sure that the entire pre-existing data was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
-    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ), ( size_t ) numBytes );
+    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ),
+                           ( size_t ) numBytes );
     expectedHeaders.dataLen = HTTP_TEST_SINGLE_HEADER_LEN;
 
     /* Set parameters for requestHeaders. */
@@ -640,21 +679,26 @@ void test_Http_AddHeader_Happy_Path()
     /* Make sure that the entire pre-existing data was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
     TEST_ASSERT_LESS_THAN( requestHeaders.bufferLen, ( size_t ) numBytes );
-    /* We correctly set headersLen after writing request line to requestHeaders.pBuffer. */
+    /* We correctly set headersLen after writing request line to
+     * requestHeaders.pBuffer. */
     requestHeaders.headersLen = HTTP_TEST_HEADER_REQUEST_LINE_LEN;
 
     /* Run the method to test. */
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_FIELD_LEN,
-                                       HTTP_TEST_HEADER_VALUE, HTTP_TEST_HEADER_VALUE_LEN );
+                                       HTTP_TEST_HEADER_FIELD,
+                                       HTTP_TEST_HEADER_FIELD_LEN,
+                                       HTTP_TEST_HEADER_VALUE,
+                                       HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( expectedHeaders.dataLen, requestHeaders.headersLen );
     TEST_ASSERT_EQUAL_MEMORY( expectedHeaders.buffer,
-                              requestHeaders.pBuffer, expectedHeaders.dataLen );
+                              requestHeaders.pBuffer,
+                              expectedHeaders.dataLen );
     TEST_ASSERT_EQUAL( HTTPSuccess, httpStatus );
 }
 
 /**
- * @brief Test invalid parameters, following order of else-if blocks in the HTTP library.
+ * @brief Test invalid parameters, following order of else-if blocks in the HTTP
+ * library.
  */
 void test_Http_AddHeader_Invalid_Params()
 {
@@ -663,48 +707,62 @@ void test_Http_AddHeader_Invalid_Params()
 
     /* Test a NULL request headers interface. */
     httpStatus = HTTPClient_AddHeader( NULL,
-                                       HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_FIELD_LEN,
-                                       HTTP_TEST_HEADER_VALUE, HTTP_TEST_HEADER_VALUE_LEN );
+                                       HTTP_TEST_HEADER_FIELD,
+                                       HTTP_TEST_HEADER_FIELD_LEN,
+                                       HTTP_TEST_HEADER_VALUE,
+                                       HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 
     /* Test a NULL pBuffer member of request headers. */
     requestHeaders.pBuffer = NULL;
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_FIELD_LEN,
-                                       HTTP_TEST_HEADER_VALUE, HTTP_TEST_HEADER_VALUE_LEN );
+                                       HTTP_TEST_HEADER_FIELD,
+                                       HTTP_TEST_HEADER_FIELD_LEN,
+                                       HTTP_TEST_HEADER_VALUE,
+                                       HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 
     /* Test NULL header field. */
     requestHeaders.pBuffer = testBuffer;
     requestHeaders.bufferLen = HTTP_TEST_DOUBLE_HEADER_LEN;
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       NULL, HTTP_TEST_HEADER_FIELD_LEN,
-                                       HTTP_TEST_HEADER_VALUE, HTTP_TEST_HEADER_VALUE_LEN );
+                                       NULL,
+                                       HTTP_TEST_HEADER_FIELD_LEN,
+                                       HTTP_TEST_HEADER_VALUE,
+                                       HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 
     /* Test NULL header value. */
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_FIELD_LEN,
-                                       NULL, HTTP_TEST_HEADER_VALUE_LEN );
+                                       HTTP_TEST_HEADER_FIELD,
+                                       HTTP_TEST_HEADER_FIELD_LEN,
+                                       NULL,
+                                       HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 
     /* Test that fieldLen > 0. */
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       HTTP_TEST_HEADER_FIELD, 0,
-                                       HTTP_TEST_HEADER_VALUE, HTTP_TEST_HEADER_VALUE_LEN );
+                                       HTTP_TEST_HEADER_FIELD,
+                                       0,
+                                       HTTP_TEST_HEADER_VALUE,
+                                       HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 
     /* Test that valueLen > 0. */
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_FIELD_LEN,
-                                       HTTP_TEST_HEADER_VALUE, 0 );
+                                       HTTP_TEST_HEADER_FIELD,
+                                       HTTP_TEST_HEADER_FIELD_LEN,
+                                       HTTP_TEST_HEADER_VALUE,
+                                       0 );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 
     /* Test that requestHeaders.headersLen <= requestHeaders.bufferLen. */
     requestHeaders.headersLen = requestHeaders.bufferLen + 1;
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_FIELD_LEN,
-                                       HTTP_TEST_HEADER_VALUE, HTTP_TEST_HEADER_VALUE_LEN );
+                                       HTTP_TEST_HEADER_FIELD,
+                                       HTTP_TEST_HEADER_FIELD_LEN,
+                                       HTTP_TEST_HEADER_VALUE,
+                                       HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, httpStatus );
 }
 
@@ -724,11 +782,14 @@ void test_Http_AddHeader_Extra_Header_Sufficient_Memory()
                          sizeof( expectedHeaders.buffer ),
                          HTTP_TEST_DOUBLE_HEADER_FORMAT,
                          HTTP_TEST_HEADER_REQUEST_LINE,
-                         HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_VALUE,
-                         HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_VALUE );
+                         HTTP_TEST_HEADER_FIELD,
+                         HTTP_TEST_HEADER_VALUE,
+                         HTTP_TEST_HEADER_FIELD,
+                         HTTP_TEST_HEADER_VALUE );
     /* Make sure that the entire pre-existing data was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
-    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ), ( size_t ) numBytes );
+    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ),
+                           ( size_t ) numBytes );
     expectedHeaders.dataLen = HTTP_TEST_DOUBLE_HEADER_LEN;
 
     /* Prefill the buffer with a request line and header. */
@@ -736,7 +797,8 @@ void test_Http_AddHeader_Extra_Header_Sufficient_Memory()
                          HTTP_TEST_SINGLE_HEADER_LEN + 1,
                          HTTP_TEST_SINGLE_HEADER_FORMAT,
                          HTTP_TEST_HEADER_REQUEST_LINE,
-                         HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_VALUE );
+                         HTTP_TEST_HEADER_FIELD,
+                         HTTP_TEST_HEADER_VALUE );
     TEST_ASSERT_EQUAL( HTTP_TEST_SINGLE_HEADER_LEN, numBytes );
     requestHeaders.headersLen = HTTP_TEST_SINGLE_HEADER_LEN;
     requestHeaders.bufferLen = expectedHeaders.dataLen;
@@ -749,7 +811,8 @@ void test_Http_AddHeader_Extra_Header_Sufficient_Memory()
                                        HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( expectedHeaders.dataLen, requestHeaders.headersLen );
     TEST_ASSERT_EQUAL_MEMORY( expectedHeaders.buffer,
-                              requestHeaders.pBuffer, expectedHeaders.dataLen );
+                              requestHeaders.pBuffer,
+                              expectedHeaders.dataLen );
     TEST_ASSERT_EQUAL( HTTPSuccess, httpStatus );
 }
 
@@ -769,10 +832,12 @@ void test_Http_AddHeader_Extra_Header_Insufficient_Memory()
                          sizeof( expectedHeaders.buffer ),
                          HTTP_TEST_SINGLE_HEADER_FORMAT,
                          HTTP_TEST_HEADER_REQUEST_LINE,
-                         HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_VALUE );
+                         HTTP_TEST_HEADER_FIELD,
+                         HTTP_TEST_HEADER_VALUE );
     /* Make sure that the entire pre-existing data was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
-    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ), ( size_t ) numBytes );
+    TEST_ASSERT_LESS_THAN( sizeof( expectedHeaders.buffer ),
+                           ( size_t ) numBytes );
     expectedHeaders.dataLen = HTTP_TEST_SINGLE_HEADER_LEN;
 
     /* Prefill the buffer with a request line and header. */
@@ -780,7 +845,8 @@ void test_Http_AddHeader_Extra_Header_Insufficient_Memory()
                          HTTP_TEST_SINGLE_HEADER_LEN + 1,
                          HTTP_TEST_SINGLE_HEADER_FORMAT,
                          HTTP_TEST_HEADER_REQUEST_LINE,
-                         HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_VALUE );
+                         HTTP_TEST_HEADER_FIELD,
+                         HTTP_TEST_HEADER_VALUE );
     /* Make sure that the entire pre-existing data was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
     TEST_ASSERT_LESS_THAN( requestHeaders.bufferLen, ( size_t ) numBytes );
@@ -795,7 +861,8 @@ void test_Http_AddHeader_Extra_Header_Insufficient_Memory()
                                        HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( expectedHeaders.dataLen, requestHeaders.headersLen );
     TEST_ASSERT_EQUAL_MEMORY( expectedHeaders.buffer,
-                              requestHeaders.pBuffer, expectedHeaders.dataLen );
+                              requestHeaders.pBuffer,
+                              expectedHeaders.dataLen );
     TEST_ASSERT_EQUAL( HTTPInsufficientMemory, httpStatus );
 }
 
@@ -854,18 +921,24 @@ void test_Http_AddHeader_Invalid_Fields()
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
 
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       colonInField, strlen( colonInField ),
-                                       HTTP_TEST_HEADER_VALUE, HTTP_TEST_HEADER_VALUE_LEN );
+                                       colonInField,
+                                       strlen( colonInField ),
+                                       HTTP_TEST_HEADER_VALUE,
+                                       HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( HTTPSecurityAlertInvalidCharacter, httpStatus );
 
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       linefeedInField, strlen( linefeedInField ),
-                                       HTTP_TEST_HEADER_VALUE, HTTP_TEST_HEADER_VALUE_LEN );
+                                       linefeedInField,
+                                       strlen( linefeedInField ),
+                                       HTTP_TEST_HEADER_VALUE,
+                                       HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( HTTPSecurityAlertInvalidCharacter, httpStatus );
 
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       carriageReturnInField, strlen( carriageReturnInField ),
-                                       HTTP_TEST_HEADER_VALUE, HTTP_TEST_HEADER_VALUE_LEN );
+                                       carriageReturnInField,
+                                       strlen( carriageReturnInField ),
+                                       HTTP_TEST_HEADER_VALUE,
+                                       HTTP_TEST_HEADER_VALUE_LEN );
     TEST_ASSERT_EQUAL( HTTPSecurityAlertInvalidCharacter, httpStatus );
 }
 
@@ -891,7 +964,8 @@ void test_Http_AddHeader_Invalid_Values()
                          sizeof( expectedHeaders.buffer ),
                          HTTP_TEST_SINGLE_HEADER_FORMAT,
                          HTTP_TEST_HEADER_REQUEST_LINE,
-                         HTTP_TEST_HEADER_FIELD, colonInValue );
+                         HTTP_TEST_HEADER_FIELD,
+                         colonInValue );
 
     /* Make sure that the entire pre-existing data was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
@@ -904,26 +978,34 @@ void test_Http_AddHeader_Invalid_Values()
     /* Make sure that the entire pre-existing data was printed to the buffer. */
     TEST_ASSERT_GREATER_THAN( 0, numBytes );
 
-    /* We correctly set headersLen after writing request line to requestHeaders.pBuffer. */
+    /* We correctly set headersLen after writing request line to
+     * requestHeaders.pBuffer. */
     requestHeaders.headersLen = HTTP_TEST_HEADER_REQUEST_LINE_LEN;
 
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_FIELD_LEN,
-                                       colonInValue, strlen( colonInValue ) );
+                                       HTTP_TEST_HEADER_FIELD,
+                                       HTTP_TEST_HEADER_FIELD_LEN,
+                                       colonInValue,
+                                       strlen( colonInValue ) );
     TEST_ASSERT_EQUAL( expectedHeaders.dataLen, requestHeaders.headersLen );
     TEST_ASSERT_EQUAL_MEMORY( expectedHeaders.buffer,
-                              requestHeaders.pBuffer, expectedHeaders.dataLen );
+                              requestHeaders.pBuffer,
+                              expectedHeaders.dataLen );
     TEST_ASSERT_EQUAL( HTTPSuccess, httpStatus );
 
     /* Now test invalid character cases. */
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_FIELD_LEN,
-                                       linefeedInValue, strlen( linefeedInValue ) );
+                                       HTTP_TEST_HEADER_FIELD,
+                                       HTTP_TEST_HEADER_FIELD_LEN,
+                                       linefeedInValue,
+                                       strlen( linefeedInValue ) );
     TEST_ASSERT_EQUAL( HTTPSecurityAlertInvalidCharacter, httpStatus );
 
     httpStatus = HTTPClient_AddHeader( &requestHeaders,
-                                       HTTP_TEST_HEADER_FIELD, HTTP_TEST_HEADER_FIELD_LEN,
-                                       carriageReturnInValue, strlen( carriageReturnInValue ) );
+                                       HTTP_TEST_HEADER_FIELD,
+                                       HTTP_TEST_HEADER_FIELD_LEN,
+                                       carriageReturnInValue,
+                                       strlen( carriageReturnInValue ) );
     TEST_ASSERT_EQUAL( HTTPSecurityAlertInvalidCharacter, httpStatus );
 }
 
@@ -981,9 +1063,10 @@ void test_Http_AddRangeHeader_Invalid_Params( void )
     /* rangeStart == INT32_MIN */
     tearDown();
     testHeaders.pBuffer = &testBuffer[ 0 ];
-    retCode = HTTPClient_AddRangeHeader( &testHeaders,
-                                         INT32_MIN /* rangeStart */,
-                                         HTTP_RANGE_REQUEST_END_OF_FILE /* rangeEnd */ );
+    retCode = HTTPClient_AddRangeHeader(
+        &testHeaders,
+        INT32_MIN /* rangeStart */,
+        HTTP_RANGE_REQUEST_END_OF_FILE /* rangeEnd */ );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, retCode );
 
     /* rangeStart is negative but rangeStart is non-End of File. */
@@ -991,7 +1074,8 @@ void test_Http_AddRangeHeader_Invalid_Params( void )
     testHeaders.pBuffer = &testBuffer[ 0 ];
     retCode = HTTPClient_AddRangeHeader( &testHeaders,
                                          -10 /* rangeStart */,
-                                         HTTP_RANGE_REQUEST_END_OF_FILE + 1 /* rangeEnd */ );
+                                         HTTP_RANGE_REQUEST_END_OF_FILE +
+                                             1 /* rangeEnd */ );
     TEST_ASSERT_EQUAL( HTTPInvalidParameter, retCode );
     tearDown();
     testHeaders.pBuffer = &testBuffer[ 0 ];
@@ -1002,7 +1086,8 @@ void test_Http_AddRangeHeader_Invalid_Params( void )
 }
 
 /**
- * @brief Test Insufficient memory failure when the buffer has one less byte than required.
+ * @brief Test Insufficient memory failure when the buffer has one less byte
+ * than required.
  */
 void test_Http_AddRangeHeader_Insufficient_Memory( void )
 {
@@ -1026,11 +1111,15 @@ void test_Http_AddRangeHeader_Insufficient_Memory( void )
     testHeaders.bufferLen = expectedHeaders.dataLen - 1;
 
     /* As the call to the API function is expected to fail, we need to store a
-     * local copy of the input headers buffer to verify that the data has not changed
-     * after the API call returns. Thus, overwrite the expected headers buffer with the
-     * copy of the complete input headers buffer to use for verification later. */
-    TEST_ASSERT_GREATER_OR_EQUAL( testHeaders.bufferLen, sizeof( expectedHeaders.buffer ) );
-    memcpy( expectedHeaders.buffer, testHeaders.pBuffer, testHeaders.bufferLen );
+     * local copy of the input headers buffer to verify that the data has not
+     * changed after the API call returns. Thus, overwrite the expected headers
+     * buffer with the copy of the complete input headers buffer to use for
+     * verification later. */
+    TEST_ASSERT_GREATER_OR_EQUAL( testHeaders.bufferLen,
+                                  sizeof( expectedHeaders.buffer ) );
+    memcpy( expectedHeaders.buffer,
+            testHeaders.pBuffer,
+            testHeaders.bufferLen );
 
     retCode = HTTPClient_AddRangeHeader( &testHeaders,
                                          testRangeStart,
@@ -1053,15 +1142,14 @@ void test_Http_AddRangeHeader_Without_Trailing_Terminator( void )
 
     /* Range specification of the form [rangeStart, rangeEnd]. */
     /* Test with 0 as the range values */
-    setupBuffersWithPreexistingHeader( &testHeaders, testBuffer,
+    setupBuffersWithPreexistingHeader( &testHeaders,
+                                       testBuffer,
                                        sizeof( testBuffer ),
                                        &expectedHeaders,
                                        PREEXISTING_REQUEST_LINE );
     testRangeStart = 0;
     testRangeEnd = 0;
-    addRangeToExpectedHeaders( &expectedHeaders,
-                               "0-0" /*expected range*/,
-                               0U );
+    addRangeToExpectedHeaders( &expectedHeaders, "0-0" /*expected range*/, 0U );
     retCode = HTTPClient_AddRangeHeader( &testHeaders,
                                          testRangeStart,
                                          testRangeEnd );
@@ -1083,15 +1171,14 @@ void test_Http_AddRangeHeader_RangeType_File_SubRange( void )
     /* Headers buffer contains header data ending with "\r\n\r\n". */
 
     /* Test with 0 as the range values */
-    setupBuffersWithPreexistingHeader( &testHeaders, testBuffer,
+    setupBuffersWithPreexistingHeader( &testHeaders,
+                                       testBuffer,
                                        sizeof( testBuffer ),
                                        &expectedHeaders,
                                        PREEXISTING_HEADER_DATA );
     testRangeStart = 0;
     testRangeEnd = 0;
-    addRangeToExpectedHeaders( &expectedHeaders,
-                               "0-0" /*expected range*/,
-                               1U );
+    addRangeToExpectedHeaders( &expectedHeaders, "0-0" /*expected range*/, 1U );
     retCode = HTTPClient_AddRangeHeader( &testHeaders,
                                          testRangeStart,
                                          testRangeEnd );
@@ -1105,7 +1192,8 @@ void test_Http_AddRangeHeader_RangeType_File_SubRange( void )
     TEST_ASSERT_EQUAL( sizeof( testBuffer ), testHeaders.bufferLen );
 
     tearDown();
-    setupBuffersWithPreexistingHeader( &testHeaders, testBuffer,
+    setupBuffersWithPreexistingHeader( &testHeaders,
+                                       testBuffer,
                                        sizeof( testBuffer ),
                                        &expectedHeaders,
                                        PREEXISTING_HEADER_DATA );
@@ -1132,15 +1220,14 @@ void test_Http_AddRangeHeader_RangeType_File_SubRange( void )
  */
 void test_Http_AddRangeHeader_RangeType_Entire_File( void )
 {
-    setupBuffersWithPreexistingHeader( &testHeaders, testBuffer,
+    setupBuffersWithPreexistingHeader( &testHeaders,
+                                       testBuffer,
                                        sizeof( testBuffer ),
                                        &expectedHeaders,
                                        PREEXISTING_HEADER_DATA );
     testRangeStart = 0;
     testRangeEnd = HTTP_RANGE_REQUEST_END_OF_FILE;
-    addRangeToExpectedHeaders( &expectedHeaders,
-                               "0-" /*expected range*/,
-                               1U );
+    addRangeToExpectedHeaders( &expectedHeaders, "0-" /*expected range*/, 1U );
     retCode = HTTPClient_AddRangeHeader( &testHeaders,
                                          testRangeStart,
                                          testRangeEnd );
@@ -1162,7 +1249,8 @@ void test_Http_AddRangeHeader_RangeType_All_Bytes_From_RangeStart( void )
     /* Range specification of the form [rangeStart,)
      * i.e. for all bytes >= rangeStart. */
     tearDown();
-    setupBuffersWithPreexistingHeader( &testHeaders, testBuffer,
+    setupBuffersWithPreexistingHeader( &testHeaders,
+                                       testBuffer,
                                        sizeof( testBuffer ),
                                        &expectedHeaders,
                                        PREEXISTING_HEADER_DATA );
@@ -1190,15 +1278,14 @@ void test_Http_AddRangeHeader_RangeType_All_Bytes_From_RangeStart( void )
 void test_Http_AddRangeHeader_RangeType_LastNBytes( void )
 {
     /* Range specification for the last N bytes. */
-    setupBuffersWithPreexistingHeader( &testHeaders, testBuffer,
+    setupBuffersWithPreexistingHeader( &testHeaders,
+                                       testBuffer,
                                        sizeof( testBuffer ),
                                        &expectedHeaders,
                                        PREEXISTING_HEADER_DATA );
     testRangeStart = -50;
     testRangeEnd = HTTP_RANGE_REQUEST_END_OF_FILE;
-    addRangeToExpectedHeaders( &expectedHeaders,
-                               "-50" /*expected range*/,
-                               1U );
+    addRangeToExpectedHeaders( &expectedHeaders, "-50" /*expected range*/, 1U );
     retCode = HTTPClient_AddRangeHeader( &testHeaders,
                                          testRangeStart,
                                          testRangeEnd );
@@ -1218,7 +1305,8 @@ void test_Http_AddRangeHeader_RangeType_LastNBytes( void )
 void test_Http_AddRangeHeader_With_Max_INT32_Range_Values( void )
 {
     /* Test with LARGE range values. */
-    setupBuffersWithPreexistingHeader( &testHeaders, testBuffer,
+    setupBuffersWithPreexistingHeader( &testHeaders,
+                                       testBuffer,
                                        sizeof( testBuffer ),
                                        &expectedHeaders,
                                        PREEXISTING_HEADER_DATA );
@@ -1340,9 +1428,10 @@ void test_Http_ReadHeader_Header_Not_In_Response( void )
                                      &valueLen );
     TEST_ASSERT_EQUAL( HTTPHeaderNotFound, retCode );
 
-    /* Repeat the test above but with fieldLenToReturn == HEADER_NOT_IN_BUFFER_LEN.
-     * Doing this allows us to take the branch where the actual contents
-     * of the fields are compared rather than just the length. */
+    /* Repeat the test above but with fieldLenToReturn ==
+     * HEADER_NOT_IN_BUFFER_LEN. Doing this allows us to take the branch where
+     * the actual contents of the fields are compared rather than just the
+     * length. */
     setUp();
     /* Add expectations for llhttp dependencies. */
     llhttp_settings_init_ExpectAnyArgs();
@@ -1380,7 +1469,8 @@ void test_Http_ReadHeader_Header_Not_In_Response( void )
  */
 void test_Http_ReadHeader_Invalid_Response_Only_Header_Field_Found()
 {
-    /* Test when invalid response only contains the header field for the requested header. */
+    /* Test when invalid response only contains the header field for the
+     * requested header. */
     const char * pResponseWithoutValue = "HTTP/1.1 200 OK\r\n"
                                          "test-header0: test-value0\r\n"
                                          "test-header1:";
@@ -1407,7 +1497,6 @@ void test_Http_ReadHeader_Invalid_Response_Only_Header_Field_Found()
                                      &valueLen );
     TEST_ASSERT_EQUAL( HTTPInvalidResponse, retCode );
 }
-
 
 /**
  * @brief Test happy path with zero-initialized requestHeaders and requestInfo.
@@ -1440,22 +1529,25 @@ void test_caseInsensitiveStringCmp()
                                      &valueLen );
     TEST_ASSERT_EQUAL( HTTPHeaderNotFound, retCode );
 
-    /* Repeat the test above but with fieldLenToReturn == HEADER_NOT_IN_BUFFER_LEN.
-     * Doing this allows us to take the branch where the actual contents
-     * of the fields are compared rather than just the length. */
+    /* Repeat the test above but with fieldLenToReturn ==
+     * HEADER_NOT_IN_BUFFER_LEN. Doing this allows us to take the branch where
+     * the actual contents of the fields are compared rather than just the
+     * length. */
     setUp();
     /* Add expectations for llhttp dependencies. */
     llhttp_settings_init_ExpectAnyArgs();
     llhttp_init_ExpectAnyArgs();
     /* Ensure that the header field does NOT match what we're searching. */
     TEST_ASSERT_EQUAL( otherHeaderFieldInRespLen, HEADER_NOT_IN_BUFFER_LEN );
-    TEST_ASSERT_TRUE( memcmp( &pTestResponseSpecialCharacter[ otherHeaderFieldInRespLoc ],
-                              HEADER_WITH_SPECIAL_CHARACTERS,
-                              HEADER_WITH_SPECIAL_CHARACTERS_LEN ) != 0 );
+    TEST_ASSERT_TRUE(
+        memcmp( &pTestResponseSpecialCharacter[ otherHeaderFieldInRespLoc ],
+                HEADER_WITH_SPECIAL_CHARACTERS,
+                HEADER_WITH_SPECIAL_CHARACTERS_LEN ) != 0 );
     /* Configure the llhttp_execute mock. */
     invokeHeaderFieldCallback = 1U;
     invokeHeaderValueCallback = 1U;
-    pFieldLocToReturn = &pTestResponseSpecialCharacter[ otherHeaderFieldInRespLoc ];
+    pFieldLocToReturn = &pTestResponseSpecialCharacter
+                            [ otherHeaderFieldInRespLoc ];
     fieldLenToReturn = otherHeaderFieldInRespLen;
     pValueLocToReturn = &pTestResponseSpecialCharacter[ headerValInRespLoc ];
     valueLenToReturn = headerValInRespLen;
@@ -1586,7 +1678,8 @@ void test_Http_ReadHeader_EmptyHeaderValue()
     pFieldLocToReturn = &pTestResponseEmptyValue[ headerFieldInRespLoc ];
     fieldLenToReturn = headerFieldInRespLen;
     /* Add two characters past the empty value to point to the next field. */
-    pValueLocToReturn = &pTestResponseEmptyValue[ headerValInRespLoc + HTTP_HEADER_LINE_SEPARATOR_LEN ];
+    pValueLocToReturn = &pTestResponseEmptyValue[ headerValInRespLoc +
+                                                  HTTP_HEADER_LINE_SEPARATOR_LEN ];
     /* llhttp will pass in a value of zero for an empty value. */
     valueLenToReturn = 0U;
     invokeHeaderFieldCallback = 1U;
