@@ -2,6 +2,8 @@
 	path = test/unit-test/CMock
 	url = https://github.com/ThrowTheSwitch/CMock.git
 	update = none
+	# v2.5.2
 [submodule "source/dependency/3rdparty/llhttp"]
 	path = source/dependency/3rdparty/llhttp
 	url = https://github.com/nodejs/llhttp.git
+	# v3.0.0
