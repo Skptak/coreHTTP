@@ -80,7 +80,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: main
-          repository: FreeRTOS/coreMQTT
+          repository: Skptak/coreMQTT
           path: ssot
       - name: Check transport_interface.h
         run: |
