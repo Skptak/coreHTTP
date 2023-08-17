@@ -249,10 +249,9 @@ extern "C" {
  * @brief The state of the response message parsed after function
  * #parseHttpResponse returns.
  */
-typedef enum HTTPParsingState_t
+typedef enum
 {
-    HTTP_PARSING_NONE = 0, /**< The parser has not started reading any response.
-                            */
+    HTTP_PARSING_NONE = 0,   /**< The parser hasn't read any response.*/
     HTTP_PARSING_INCOMPLETE, /**< The parser found a partial reponse. */
     HTTP_PARSING_COMPLETE    /**< The parser found the entire response. */
 } HTTPParsingState_t;
