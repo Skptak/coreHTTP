@@ -28,8 +28,8 @@
  * @brief Implements the proof harness for HTTPClient_Send function.
  */
 
-#include "core_http_client.h"
 #include "get_time_stub.h"
+#include "core_http_client.h"
 #include "http_cbmc_state.h"
 #include "transport_interface_stubs.h"
 
@@ -61,11 +61,10 @@ void HTTPClient_Send_harness()
     {
         /* Ideally, we want to set the function pointers below with
          * __CPROVER_assume() but doing so makes CBMC run out of memory. */
-        pTransportInterface->send = nondet_bool() ? NULL
-                                                  : TransportInterfaceSendStub;
-        pTransportInterface->recv = nondet_bool()
-                                        ? NULL
-                                        : TransportInterfaceReceiveStub;
+        /* clang-format off */
+        pTransportInterface->send = nondet_bool() ? NULL : TransportInterfaceSendStub;
+        pTransportInterface->recv = nondet_bool() ? NULL : TransportInterfaceReceiveStub;
+        /* clang-format on */
     }
 
     if( pResponse != NULL )

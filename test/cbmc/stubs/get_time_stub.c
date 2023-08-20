@@ -27,8 +27,10 @@
  * @file get_time_stub.c
  * @brief A stub to mock the retrieval of current time.
  */
-#include "get_time_stub.h"
+/* LibC Includes */
 #include "stdint.h"
+
+#include "get_time_stub.h"
 
 uint32_t GetCurrentTimeStub( void )
 {
