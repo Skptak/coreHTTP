@@ -161,7 +161,7 @@ jobs:
     runs-on: cbmc_ubuntu-latest_64-core
     steps:
       - name: Set up CBMC runner
-        uses: FreeRTOS/CI-CD-Github-Actions/set_up_cbmc_runner@v2
+        uses: FreeRTOS/CI-CD-Github-Actions/set_up_cbmc_runner@main
         with:
           kissat_tag: latest
           cbmc_version: "5.73.0"
@@ -170,6 +170,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends gcc-multilib build-essential
       - name: Run CBMC
-        uses: FreeRTOS/CI-CD-Github-Actions/run_cbmc@v2
+        uses: FreeRTOS/CI-CD-Github-Actions/run_cbmc@main
         with:
           proofs_dir: test/cbmc/proofs
